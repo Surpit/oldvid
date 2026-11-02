@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tube — открытые видео</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: "Lucida Grande", "Segoe UI", Tahoma, sans-serif;
+    font-size: 14px; color: #e8e0d0;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 2px, transparent 2px 5px),
+      radial-gradient(circle at 50% -10%, #55483c 0%, #2a231d 55%, #171310 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding-bottom: 30px;
+  }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    background:
+      repeating-linear-gradient(180deg, rgba(255,255,255,.045) 0 1px, rgba(0,0,0,.045) 1px 3px),
+      linear-gradient(180deg, #7a7a7a 0%, #5c5c5c 42%, #3f3f3f 50%, #333 52%, #4a4a4a 100%);
+    border-bottom: 1px solid #0b0b0b;
+    box-shadow: 0 3px 10px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.45);
+    flex-wrap: wrap;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 22px; font-weight: 800;
+    color: #f1ece2; text-shadow: 0 1px 0 #000, 0 2px 4px rgba(0,0,0,.6);
+  }
+  .logo-icon {
+    width: 44px; height: 30px; border-radius: 8px;
+    background: linear-gradient(180deg, #ff6a5e 0%, #e5251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%);
+    border: 1px solid #5c0805;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 3px 7px rgba(0,0,0,.75);
+    display: grid; place-items: center;
+  }
+  .logo-icon::after {
+    content: "";
+    width: 0; height: 0;
+    border-left: 11px solid #fff;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    margin-left: 3px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.6));
+  }
+  .searchbar { flex: 1; display: flex; gap: 8px; max-width: 500px; min-width: 140px; }
+  .searchbar input {
+    flex: 1; height: 36px; border-radius: 18px; padding: 0 16px;
+    font-size: 14px; color: #f0e9dc; outline: none;
+    border: 1px solid #0d0d0d;
+    background: linear-gradient(180deg, #161616 0%, #232323 60%, #2b2b2b 100%);
+    box-shadow: inset 0 3px 6px rgba(0,0,0,.95), 0 1px 0 rgba(255,255,255,.22);
+    -webkit-appearance: none;
+  }
+  .searchbar input::placeholder { color: #7d766a; }
+  .btn {
+    height: 36px; padding: 0 16px; border-radius: 9px; cursor: pointer;
+    font-size: 13px; font-weight: 700; font-family: inherit; color: #f4efe4;
+    text-shadow: 0 1px 1px rgba(0,0,0,.85); border: 1px solid #131313;
+    background: linear-gradient(180deg, #8c8c8c 0%, #666 46%, #4a4a4a 52%, #3a3a3a 78%, #5e5e5e 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 2px 5px rgba(0,0,0,.7);
+    -webkit-appearance: none; white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.red {
+    background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%);
+    border-color: #5c0805;
+  }
+  .btn.admin-toggle {
+    padding: 0 12px; font-size: 16px;
+  }
+
+  .auth-block { display: flex; align-items: center; gap: 8px; }
+  .user-nick {
+    font-size: 13px; font-weight: 700; color: #ffd6c9;
+    padding: 6px 12px; border-radius: 8px;
+    background: linear-gradient(180deg, #4a2e2a, #2b1a16);
+    border: 1px solid #0a0805;
+    text-shadow: 0 1px 2px rgba(0,0,0,.7);
+    max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .admin-badge {
+    display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 4px;
+    background: #c9241b; color: #fff; margin-left: 4px; letter-spacing: .5px;
+    vertical-align: middle;
+  }
+
+  .main { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+
+  .stage {
+    border-radius: 14px; padding: 10px;
+    background: linear-gradient(180deg, #5a5a5a 0%, #3d3d3d 48%, #2b2b2b 52%, #3a3a3a 100%);
+    border: 1px solid #101010;
+    box-shadow: 0 10px 26px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.4);
+  }
+  .screen {
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    border-radius: 8px; overflow: hidden; background: #000;
+    border: 1px solid #000;
+  }
+  .screen video { width: 100%; height: 100%; display: block; background: #000; }
+  .err {
+    position: absolute; inset: 0; display: none; place-items: center; text-align: center;
+    padding: 20px; color: #ffb3a6; font-weight: 700; background: rgba(0,0,0,.8);
+  }
+  .err.show { display: grid; }
+
+  .meta {
+    margin-top: 14px; padding: 16px; border-radius: 12px;
+    background: linear-gradient(180deg, #474747 0%, #333 50%, #2a2a2a 100%);
+    border: 1px solid #101010;
+  }
+  .meta h1 { margin: 0 0 8px; font-size: 18px; color: #f5efe3; }
+  .meta .sub { font-size: 12.5px; color: #b3a897; }
+  .meta .sub b { color: #ffcdbf; }
+
+  .section-title {
+    margin: 26px 0 14px; font-size: 14px; font-weight: 800; letter-spacing: 1.2px;
+    text-transform: uppercase; color: #d9c9a8;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title::after {
+    content: ""; flex: 1; height: 2px;
+    background: linear-gradient(90deg, rgba(255,255,255,.22), rgba(0,0,0,.5));
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    cursor: pointer; border-radius: 12px; padding: 8px;
+    border: 1px solid #131313;
+    background: linear-gradient(180deg, #4f4f4f 0%, #3a3a3a 50%, #2d2d2d 100%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.32), 0 5px 14px rgba(0,0,0,.7);
+    transition: transform .14s;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .card.active { border-color: #7a1c12; box-shadow: 0 0 0 2px rgba(255,90,70,.5), 0 8px 18px rgba(0,0,0,.8); }
+  .thumb {
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    border-radius: 8px; overflow: hidden;
+    background: linear-gradient(140deg, #2b2b2b, #141414);
+    border: 1px solid #000;
+    display: grid; place-items: center;
+    font-size: 32px; color: #ff8a7d;
+  }
+  .badge {
+    position: absolute; left: 6px; top: 6px;
+    padding: 2px 7px; border-radius: 4px; font-size: 9px; font-weight: 700;
+    color: #d6ffdc; background: linear-gradient(180deg, rgba(30,90,50,.92), rgba(8,35,18,.95));
+    border: 1px solid #000;
+  }
+  .badge.mine {
+    color: #ffd6c9;
+    background: linear-gradient(180deg, #8a2e1a, #4a1008);
+  }
+  .dur {
+    position: absolute; right: 6px; bottom: 6px;
+    padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 700;
+    color: #fff; background: rgba(0,0,0,.9); border: 1px solid #000;
+  }
+  .card-body { padding: 10px 6px 4px; }
+  .card-title {
+    font-size: 13.5px; font-weight: 700; color: #f3ece0; line-height: 1.35;
+    margin-bottom: 6px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-sub { font-size: 11.5px; color: #a89c88; }
+
+  .card-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .mini {
+    flex: 1; height: 28px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    font-family: inherit; cursor: pointer; color: #e8dcc4; border: 1px solid #101010;
+    background: linear-gradient(180deg, #5a5a5a, #2b2b2b);
+    -webkit-appearance: none;
+  }
+  .mini.danger {
+    color: #ffe0d6;
+    background: linear-gradient(180deg, #c9241b, #6b0905);
+  }
+
+  .modal-back {
+    position: fixed; inset: 0; z-index: 500;
+    display: none; place-items: center; padding: 20px;
+    background: rgba(0,0,0,.78);
+  }
+  .modal-back.show { display: grid; }
+  .modal {
+    width: 100%; max-width: 420px; padding: 22px; border-radius: 14px;
+    background: linear-gradient(180deg, #4e3d2c 0%, #3a2c1f 45%, #2a1f16 100%);
+    border: 1px solid #0c0805;
+    box-shadow: 0 20px 40px rgba(0,0,0,.85);
+  }
+  .modal h3 { margin: 0 0 14px; color: #f0e1c4; font-size: 16px; }
+  .modal p { margin: 0 0 16px; color: #a89880; font-size: 12px; line-height: 1.5; }
+  .modal label {
+    display: block; font-size: 11px; font-weight: 700; color: #c8ab7e;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .modal input[type="text"], .modal input[type="url"] {
+    width: 100%; height: 42px; padding: 0 14px; margin-bottom: 14px;
+    border-radius: 8px; font-size: 14px; font-family: inherit; color: #f0e9dc;
+    outline: none; border: 1px solid #000;
+    background: linear-gradient(180deg, #0f0f0f, #1d1d1d);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.95);
+    -webkit-appearance: none;
+  }
+  .modal input::placeholder { color: #6b6355; }
+  .modal .row { display: flex; gap: 8px; }
+  .modal .row .btn { flex: 1; height: 42px; }
+
+  .admin-modal { max-width: 720px; max-height: 82vh; display: flex; flex-direction: column; }
+  .admin-body { flex: 1; overflow-y: auto; margin: 0 -6px; padding: 0 6px; }
+  .admin-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px; margin-bottom: 8px;
+    border-radius: 8px; background: rgba(0,0,0,.3);
+    border: 1px solid #0a0805;
+  }
+  .admin-info { flex: 1; min-width: 0; }
+  .admin-title { font-size: 13.5px; font-weight: 700; color: #f0e1c4; margin-bottom: 4px; }
+  .admin-sub { font-size: 11px; color: #a89880; margin-bottom: 4px; }
+  .admin-url { font-size: 10.5px; color: #7a6b58; word-break: break-all; }
+  .admin-actions { display: flex; gap: 4px; flex: 0 0 auto; }
+  .admin-actions .mini { width: 36px; padding: 0; }
+
+  .tutorial-modal { max-width: 520px; max-height: 88vh; display: flex; flex-direction: column; }
+  .tut-body { flex: 1; overflow-y: auto; padding: 0 4px; margin-bottom: 12px; }
+  .tut-step {
+    display: flex; gap: 12px; padding: 12px; margin-bottom: 10px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15));
+    border: 1px solid #0a0805;
+  }
+  .tut-num {
+    flex: 0 0 auto;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 800;
+    color: #fff;
+    background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%);
+    border: 1px solid #5c0805;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 2px 5px rgba(0,0,0,.6);
+    text-shadow: 0 1px 1px rgba(0,0,0,.5);
+  }
+  .tut-text { flex: 1; min-width: 0; }
+  .tut-text b { color: #ffd6c9; }
+  .tut-text .lbl {
+    font-size: 11px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; color: #ffb9a8; margin-bottom: 4px;
+  }
+  .tut-text .desc { font-size: 13px; color: #e0d4be; line-height: 1.5; }
+  .tut-text .desc code {
+    background: rgba(0,0,0,.5); padding: 1px 6px; border-radius: 4px;
+    font-size: 12px; color: #ffcdbf;
+  }
+  .tut-example {
+    margin-top: 8px; padding: 8px 10px; border-radius: 6px;
+    background: rgba(0,0,0,.55); border: 1px solid #0a0805;
+    font-family: "Courier New", monospace;
+    font-size: 11px; color: #b6ffb6;
+    word-break: break-all;
+  }
+  .tut-footer-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; font-size: 12px; color: #a89880;
+  }
+  .tut-footer-row input[type="checkbox"] {
+    width: 18px; height: 18px; margin: 0;
+    accent-color: #c9241b;
+    cursor: pointer;
+  }
+  .tut-footer-row label { cursor: pointer; user-select: none; }
+  .tut-open-btn {
+    width: 100%; margin-bottom: 10px;
+    background: linear-gradient(180deg, #6ab96a 0%, #3a8f3a 50%, #256625 100%);
+    border-color: #1a4a1a;
+  }
+
+  .empty { padding: 40px; text-align: center; color: #8d8271; font-weight: 700; }
+
+  .fab {
+    position: fixed; right: 20px; bottom: 20px; z-index: 200;
+    width: 58px; height: 58px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 28px; color: #fff; font-weight: 700;
+    cursor: pointer; border: 1px solid #5c0805;
+    background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%);
+    box-shadow: 0 6px 16px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.6);
+    text-shadow: 0 1px 2px rgba(0,0,0,.7);
+  }
+  .fab:active { transform: scale(.92); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 100px; transform: translate(-50%, 20px);
+    z-index: 600; padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; color: #fff;
+    background: rgba(0,0,0,.9); border: 1px solid rgba(255,255,255,.15);
+    opacity: 0; pointer-events: none; transition: all .25s;
+    max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 600px) {
+    .logo span { display: none; }
+    .searchbar { order: 3; flex-basis: 100%; max-width: none; margin: 0; }
+    .meta h1 { font-size: 15px; }
+    .user-nick { max-width: 90px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <span>Tube</span>
+  </div>
+  <form class="searchbar" id="searchForm">
+    <input id="searchInput" type="search" placeholder="Поиск видео…">
+  </form>
+  <button class="btn admin-toggle" id="adminToggle" title="Админ-панель">⚙</button>
+  <div class="auth-block" id="authBlock"></div>
+</header>
+
+<main class="main">
+  <section class="stage">
+    <div class="screen">
+      <video id="player" preload="metadata" playsinline controls muted></video>
+      <div class="err" id="err">
+        ⚠ Не удалось загрузить видео<br>
+        <span style="font-size:11px;font-weight:400;opacity:.8">Источник недоступен</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="meta">
+    <h1 id="vTitle">Загрузка…</h1>
+    <div class="sub">
+      <b id="vChannel">—</b> • <span id="vTag">—</span>
+    </div>
+  </section>
+
+  <h2 class="section-title">Все видео</h2>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="fab" id="fabAdd">＋</div>
+
+<div class="modal-back" id="modalBack">
+  <div class="modal">
+    <h3>Добавить видео по ссылке</h3>
+    <p>Вставьте прямую ссылку на MP4 / WebM. Видео появится у всех, кто откроет сайт.</p>
+    <label>Название</label>
+    <input id="inTitle" type="text" placeholder="Например: Sintel" maxlength="200">
+    <label>Канал</label>
+    <input id="inChannel" type="text" placeholder="Например: Blender Foundation" maxlength="100">
+    <label>Ссылка на видеофайл</label>
+    <input id="inUrl" type="url" placeholder="https://example.com/video.mp4">
+    <div class="row">
+      <button class="btn" id="cancelBtn" type="button">Отмена</button>
+      <button class="btn red" id="addBtn" type="button">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-back" id="loginBack">
+  <div class="modal">
+    <h3>Вход</h3>
+    <p>Введите ваш ник. Он сохранится в этом браузере и будет использоваться при добавлении видео.</p>
+    <label>Ваш ник</label>
+    <input id="loginNick" type="text" placeholder="Например: Иван" maxlength="30">
+    <div class="row">
+      <button class="btn" id="loginCancel" type="button">Отмена</button>
+      <button class="btn red" id="loginOk" type="button">Войти</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-back" id="adminBack">
+  <div class="modal admin-modal">
+    <h3>⚙ Админ-панель</h3>
+    <p>Все видео в базе. Можно редактировать и удалять.</p>
+    <div class="admin-body" id="adminBody"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="btn" id="adminResetTut" type="button">📚 Туториал</button>
+      <button class="btn" id="adminLogout" type="button">Выйти</button>
+      <button class="btn red" id="adminClose" type="button">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-back" id="tutBack">
+  <div class="modal tutorial-modal">
+    <h3>📚 Как добавить своё видео</h3>
+    <p>Короткий гайд: где взять прямую ссылку на видеофайл.</p>
+    <div class="tut-body">
+      <div class="tut-step">
+        <div class="tut-num">1</div>
+        <div class="tut-text">
+          <div class="lbl">Открой catbox.moe</div>
+          <div class="desc">Перейди на сайт <b>catbox.moe</b> — это бесплатный хостинг файлов без регистрации. Работает из любой страны.</div>
+        </div>
+      </div>
+      <div class="tut-step">
+        <div class="tut-num">2</div>
+        <div class="tut-text">
+          <div class="lbl">Загрузи файл</div>
+          <div class="desc">На главной странице нажми <b>«Choose Files»</b> и выбери своё видео (MP4, WebM, до 200 МБ). Потом нажми <b>«Upload»</b> и подожди несколько секунд.</div>
+        </div>
+      </div>
+      <div class="tut-step">
+        <div class="tut-num">3</div>
+        <div class="tut-text">
+          <div class="lbl">Скопируй ссылку</div>
+          <div class="desc">После загрузки catbox покажет прямую ссылку. Скопируй её целиком — она должна заканчиваться на <code>.mp4</code> и начинаться с <code>https://files.catbox.moe/</code></div>
+          <div class="tut-example">https://files.catbox.moe/abc123.mp4</div>
+        </div>
+      </div>
+      <div class="tut-step">
+        <div class="tut-num">4</div>
+        <div class="tut-text">
+          <div class="lbl">Вставь сюда</div>
+          <div class="desc">Вернись на этот сайт, нажми <b>＋</b>, вставь ссылку и нажми <b>«Добавить»</b>. Видео сразу появится в общей галерее.</div>
+        </div>
+      </div>
+      <div class="tut-step" style="background: linear-gradient(180deg, rgba(90,60,20,.4), rgba(40,25,10,.2)); border-color: #4a3520;">
+        <div class="tut-num" style="background: linear-gradient(180deg, #d8a400, #7a5c00); border-color: #5a4400;">💡</div>
+        <div class="tut-text">
+          <div class="lbl" style="color: #ffd67a;">Альтернативы</div>
+          <div class="desc">Если catbox не работает — попробуй <b>GitHub Releases</b> (до 2 ГБ), <b>0x0.st</b> (до 512 МБ) или <b>Dropbox</b> (замени <code>www.dropbox.com</code> на <code>dl.dropboxusercontent.com</code>).</div>
+        </div>
+      </div>
+    </div>
+    <div class="tut-footer-row">
+      <input type="checkbox" id="tutDontShow">
+      <label for="tutDontShow">Больше не показывать</label>
+    </div>
+    <button class="btn tut-open-btn" id="tutOpenSite" type="button">🌐 Открыть catbox.moe</button>
+    <div class="row">
+      <button class="btn red" id="tutContinue" type="button">Понятно, продолжить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL  = "https://zmvcbcoqhgkycnbskhak.supabase.co";
+const SUPABASE_ANON = "sb_publishable_agTPXSKIj-R7Oq_-LrfEWA_kcfiPoxF";
+const ADMIN_PASSWORD = "itutgy98trh9877857yutuinhjgfug";
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+const BUILTIN = [
+  { id: "b1", title: "Big Buck Bunny", channel: "Blender Foundation", tag: "Анимация", dur: "9:56",
+    url: "https://media.w3.org/2010/05/bunny/movie.mp4" },
+  { id: "b2", title: "Sintel", channel: "Blender Foundation", tag: "Анимация", dur: "14:48",
+    url: "https://media.w3.org/2010/05/sintel/trailer.mp4" },
+  { id: "b3", title: "Flower (MDN)", channel: "MDN Samples", tag: "Демо", dur: "0:30",
+    url: "https://mdn.github.io/shared-assets/videos/flower.mp4" },
+  { id: "b4", title: "W3C Movie Sample", channel: "W3C Media", tag: "Демо", dur: "0:32",
+    url: "https://media.w3.org/2010/05/video/movie_300.mp4" },
+  { id: "b5", title: "Elephants Dream", channel: "Blender Foundation", tag: "Анимация", dur: "10:53",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+  { id: "b6", title: "Tears of Steel", channel: "Blender Foundation", tag: "Sci-Fi", dur: "12:14",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" }
+];
+
+let serverVideos = [];
+let currentVideo = null;
+let searchQuery = "";
+let pendingCallback = null;
+
+const $ = id => document.getElementById(id);
+const grid = $("grid");
+const player = $("player");
+const errBox = $("err");
+
+const USER_KEY = "tube_user";
+const ADMIN_KEY = "tube_admin";
+const TUT_KEY = "tube_tut_dont_show";
+
+function getCurrentUser() { return localStorage.getItem(USER_KEY) || null; }
+function isAdmin() { return localStorage.getItem(ADMIN_KEY) === "1"; }
+
+function setCurrentUser(name) {
+  localStorage.setItem(USER_KEY, name);
+  updateAuthUI();
+}
+function logoutUser() {
+  localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(ADMIN_KEY);
+  updateAuthUI();
+  renderGrid();
+}
+
+function updateAuthUI() {
+  const user = getCurrentUser();
+  const authBlock = $("authBlock");
+  if (user) {
+    const adminBadge = isAdmin() ? '<span class="admin-badge">ADMIN</span>' : "";
+    authBlock.innerHTML = '<span class="user-nick">' + escapeHtml(user) + adminBadge + '</span><button class="btn" id="logoutBtn">Выйти</button>';
+    $("logoutBtn").addEventListener("click", logoutUser);
+  } else {
+    authBlock.innerHTML = '<button class="btn red" id="loginBtn">Войти</button>';
+    $("loginBtn").addEventListener("click", () => openLoginModal());
+  }
+}
+
+function openLoginModal(callback) {
+  pendingCallback = callback || null;
+  $("loginNick").value = getCurrentUser() || "";
+  $("loginBack").classList.add("show");
+  setTimeout(() => $("loginNick").focus(), 150);
+}
+
+$("loginCancel").addEventListener("click", () => {
+  $("loginBack").classList.remove("show");
+  pendingCallback = null;
+});
+$("loginNick").addEventListener("keydown", e => {
+  if (e.key === "Enter") $("loginOk").click();
+});
+$("loginOk").addEventListener("click", () => {
+  const nick = $("loginNick").value.trim();
+  if (!nick) { toast("Введите ник"); return; }
+  if (nick.length < 2) { toast("Слишком короткий ник"); return; }
+  if (nick.length > 30) { toast("Слишком длинный ник"); return; }
+  setCurrentUser(nick);
+  $("loginBack").classList.remove("show");
+  toast("Вы вошли как " + nick);
+  const cb = pendingCallback;
+  pendingCallback = null;
+  if (cb) setTimeout(cb, 100);
+});
+
+function tutorialShown() { return localStorage.getItem(TUT_KEY) === "1"; }
+
+function openTutorial(callback) {
+  pendingCallback = callback || null;
+  $("tutBack").classList.add("show");
+}
+function closeTutorial(runCallback) {
+  $("tutBack").classList.remove("show");
+  if ($("tutDontShow").checked) localStorage.setItem(TUT_KEY, "1");
+  const cb = pendingCallback;
+  pendingCallback = null;
+  if (runCallback && cb) setTimeout(cb, 100);
+}
+$("tutContinue").addEventListener("click", () => closeTutorial(true));
+$("tutBack").addEventListener("click", e => { if (e.target === $("tutBack")) closeTutorial(true); });
+$("tutOpenSite").addEventListener("click", () => window.open("https://catbox.moe/", "_blank", "noopener"));
+
+$("adminToggle").addEventListener("click", tryAdminLogin);
+function tryAdminLogin() {
+  if (isAdmin()) { openAdminPanel(); return; }
+  const pwd = prompt("Введите пароль администратора:");
+  if (pwd === null) return;
+  if (pwd !== ADMIN_PASSWORD) { toast("Неверный пароль"); return; }
+  localStorage.setItem(ADMIN_KEY, "1");
+  updateAuthUI();
+  renderGrid();
+  toast("Режим администратора");
+  openAdminPanel();
+}
+function openAdminPanel() { renderAdminPanel(); $("adminBack").classList.add("show"); }
+function closeAdminPanel() { $("adminBack").classList.remove("show"); }
+$("adminClose").addEventListener("click", closeAdminPanel);
+$("adminBack").addEventListener("click", e => { if (e.target === $("adminBack")) closeAdminPanel(); });
+$("adminLogout").addEventListener("click", () => {
+  localStorage.removeItem(ADMIN_KEY);
+  updateAuthUI();
+  renderGrid();
+  closeAdminPanel();
+  toast("Вы вышли из админки");
+});
+$("adminResetTut").addEventListener("click", () => {
+  localStorage.removeItem(TUT_KEY);
+  closeAdminPanel();
+  toast("Туториал будет показан заново");
+  setTimeout(() => openTutorial(null), 300);
+});
+
+function renderAdminPanel() {
+  const body = $("adminBody");
+  if (!serverVideos.length) {
+    body.innerHTML = '<div class="empty">Пока нет видео в базе</div>';
+    return;
+  }
+  body.innerHTML = serverVideos.map(v => {
+    const owner = v.owner ? escapeHtml(v.owner) : "—";
+    const date = v.added_at ? new Date(v.added_at).toLocaleString("ru") : "—";
+    return '<div class="admin-row"><div class="admin-info"><div class="admin-title">' + escapeHtml(v.title) + '</div><div class="admin-sub">' + escapeHtml(v.channel || "") + ' • ' + owner + ' • ' + date + '</div><div class="admin-url">' + escapeHtml(v.url) + '</div></div><div class="admin-actions"><button class="mini" data-admin="edit" data-id="' + v.id + '">✏</button><button class="mini danger" data-admin="delete" data-id="' + v.id + '">🗑</button></div></div>';
+  }).join("");
+  body.querySelectorAll('[data-admin="edit"]').forEach(btn => btn.addEventListener("click", () => editVideoFull(Number(btn.dataset.id))));
+  body.querySelectorAll('[data-admin="delete"]').forEach(btn => btn.addEventListener("click", () => deleteVideoConfirm(Number(btn.dataset.id))));
+}
+
+async function editVideoFull(id) {
+  const v = serverVideos.find(x => x.id === id);
+  if (!v) return;
+  const newTitle = prompt("Название:", v.title);
+  if (newTitle === null) return;
+  const newChannel = prompt("Канал:", v.channel || "");
+  if (newChannel === null) return;
+  const newUrl = prompt("Ссылка на видео:", v.url);
+  if (newUrl === null) return;
+  if (!newUrl || !/^https?:\/\//i.test(newUrl)) { toast("Ссылка должна начинаться с http:// или https://"); return; }
+  try {
+    const { error } = await sb.from("videos").update({
+      title: newTitle.trim() || "Без названия",
+      channel: newChannel.trim() || "Неизвестный канал",
+      url: newUrl.trim()
+    }).eq("id", id);
+    if (error) throw error;
+    toast("Обновлено");
+  } catch (e) { toast("Ошибка: " + e.message); }
+}
+
+async function deleteVideoConfirm(id) {
+  const v = serverVideos.find(x => x.id === id);
+  if (!v) return;
+  if (!confirm('Удалить "' + v.title + '"?')) return;
+  try {
+    const { error } = await sb.from("videos").delete().eq("id", id);
+    if (error) throw error;
+    toast("Удалено");
+  } catch (e) { toast("Ошибка: " + e.message); }
+}
+
+async function loadVideos() {
+  const { data, error } = await sb.from("videos").select("*").order("added_at", { ascending: false });
+  if (error) { console.error("Supabase error:", error); toast("Ошибка загрузки: " + error.message); return; }
+  serverVideos = data || [];
+  renderGrid();
+  if ($("adminBack").classList.contains("show")) renderAdminPanel();
+}
+
+async function addVideo(title, channel, url) {
+  if (!url) throw new Error("Ссылка обязательна");
+  if (!/^https?:\/\//i.test(url)) throw new Error("Ссылка должна начинаться с http:// или https://");
+  const { data, error } = await sb.from("videos").insert([{
+    title: title || "Без названия",
+    channel: channel || "Неизвестный канал",
+    url: url,
+    owner: getCurrentUser() || ""
+  }]).select().single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+async function updateMyVideo(id, fields) {
+  const { error } = await sb.from("videos").update(fields).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+async function deleteMyVideo(id) {
+  const { error } = await sb.from("videos").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+function subscribeRealtime() {
+  sb.channel("videos-channel").on("postgres_changes", { event: "*", schema: "public", table: "videos" }, () => loadVideos()).subscribe();
+}
+
+function renderGrid() {
+  const me = getCurrentUser();
+  const admin = isAdmin();
+  const custom = serverVideos.map(v => ({
+    id: "srv_" + v.id,
+    rawId: v.id,
+    isCustom: true,
+    isMine: me && v.owner === me,
+    title: v.title,
+    channel: v.channel || "Неизвестный канал",
+    tag: "Своя ссылка",
+    dur: "—",
+    url: v.url
+  }));
+  const builtin = BUILTIN.map(v => ({ ...v, isCustom: false, isMine: false }));
+  let all = custom.concat(builtin);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    all = all.filter(v => (v.title + " " + v.channel + " " + v.tag).toLowerCase().includes(q));
+  }
+  grid.innerHTML = "";
+  if (!all.length) { grid.innerHTML = '<div class="empty">Ничего не найдено</div>'; return; }
+  all.forEach(v => {
+    const canEdit = v.isCustom && (v.isMine || admin);
+    const badgeText = v.isCustom ? (v.isMine ? 'МОЁ' : 'ССЫЛКА') : 'OPEN';
+    const card = document.createElement("div");
+    card.className = "card" + (currentVideo && currentVideo.id === v.id ? " active" : "");
+    card.innerHTML = '<div class="thumb">🎬<div class="badge ' + (v.isCustom ? 'mine' : '') + '">' + badgeText + '</div><div class="dur">' + (v.dur || '—') + '</div></div><div class="card-body"><div class="card-title">' + escapeHtml(v.title) + '</div><div class="card-sub">' + escapeHtml(v.channel) + '</div>' + (canEdit ? '<div class="card-actions"><button class="mini" data-act="edit">✏ Изм.</button><button class="mini danger" data-act="delete">🗑 Удал.</button></div>' : '') + '</div>';
+    card.addEventListener("click", e => { if (e.target.closest("button")) return; playVideo(v); });
+    if (canEdit) {
+      card.querySelector('[data-act="edit"]').addEventListener("click", e => { e.stopPropagation(); editMyVideoCard(v); });
+      card.querySelector('[data-act="delete"]').addEventListener("click", e => { e.stopPropagation(); confirmDeleteMyVideo(v); });
+    }
+    grid.appendChild(card);
+  });
+}
+
+async function editMyVideoCard(v) {
+  const newTitle = prompt("Название:", v.title);
+  if (newTitle === null) return;
+  const newChannel = prompt("Канал:", v.channel);
+  if (newChannel === null) return;
+  const newUrl = prompt("Ссылка:", v.url);
+  if (newUrl === null) return;
+  if (!newUrl || !/^https?:\/\//i.test(newUrl)) { toast("Ссылка должна начинаться с http:// или https://"); return; }
+  try {
+    await updateMyVideo(v.rawId, {
+      title: newTitle.trim() || "Без названия",
+      channel: newChannel.trim() || "Неизвестный канал",
+      url: newUrl.trim()
+    });
+    toast("Обновлено");
+  } catch (e) { toast("Ошибка: " + e.message); }
+}
+
+async function confirmDeleteMyVideo(v) {
+  if (!confirm('Удалить "' + v.title + '"?')) return;
+  try { await deleteMyVideo(v.rawId); toast("Удалено"); }
+  catch (e) { toast("Ошибка: " + e.message); }
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
+function playVideo(v) {
+  currentVideo = v;
+  errBox.classList.remove("show");
+  player.src = v.url;
+  player.load();
+  player.play().catch(() => {});
+  $("vTitle").textContent = v.title;
+  $("vChannel").textContent = v.channel;
+  $("vTag").textContent = v.tag || "Своя ссылка";
+  renderGrid();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+player.addEventListener("error", () => { if (player.src) errBox.classList.add("show"); });
+player.addEventListener("playing", () => errBox.classList.remove("show"));
+
+const modalBack = $("modalBack");
+function openAddModal() { modalBack.classList.add("show"); setTimeout(() => $("inUrl").focus(), 150); }
+
+$("fabAdd").addEventListener("click", () => {
+  if (!getCurrentUser()) {
+    toast("Войдите, чтобы добавлять видео");
+    openLoginModal(() => {
+      if (!tutorialShown()) openTutorial(() => openAddModal());
+      else openAddModal();
+    });
+    return;
+  }
+  if (!tutorialShown()) { openTutorial(() => openAddModal()); return; }
+  openAddModal();
+});
+
+$("cancelBtn").addEventListener("click", () => {
+  modalBack.classList.remove("show");
+  $("inTitle").value = $("inChannel").value = $("inUrl").value = "";
+});
+modalBack.addEventListener("click", e => { if (e.target === modalBack) $("cancelBtn").click(); });
+
+$("addBtn").addEventListener("click", async () => {
+  if (!getCurrentUser()) { $("cancelBtn").click(); openLoginModal(() => openAddModal()); return; }
+  const title = $("inTitle").value.trim();
+  const channel = $("inChannel").value.trim();
+  const url = $("inUrl").value.trim();
+  if (!url) { toast("Вставьте ссылку на видео"); $("inUrl").focus(); return; }
+  $("addBtn").disabled = true;
+  $("addBtn").textContent = "Добавление…";
+  try {
+    await addVideo(title, channel, url);
+    toast("Видео добавлено!");
+    $("cancelBtn").click();
+  } catch (e) { toast("Ошибка: " + e.message); }
+  finally { $("addBtn").disabled = false; $("addBtn").textContent = "Добавить"; }
+});
+
+$("searchForm").addEventListener("submit", e => { e.preventDefault(); searchQuery = $("searchInput").value.trim(); renderGrid(); });
+$("searchInput").addEventListener("input", e => { searchQuery = e.target.value.trim(); renderGrid(); });
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2500);
+}
+
+async function init() {
+  updateAuthUI();
+  try {
+    await loadVideos();
+    subscribeRealtime();
+    if (serverVideos.length) {
+      const first = serverVideos[0];
+      playVideo({
+        id: "srv_" + first.id,
+        rawId: first.id,
+        isCustom: true,
+        isMine: getCurrentUser() && first.owner === getCurrentUser(),
+        title: first.title,
+        channel: first.channel,
+        tag: "Своя ссылка",
+        url: first.url
+      });
+    } else if (BUILTIN.length) {
+      playVideo(BUILTIN[0]);
+    }
+  } catch (e) { console.error(e); toast("Ошибка инициализации"); }
+}
+init();
+</script>
+</body>
+</html>
