@@ -57,7 +57,6 @@
   .btn:active { transform: translateY(1px); }
   .btn.red { background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%); border-color: #5c0805; }
   .btn.admin-toggle { padding: 0 12px; font-size: 16px; }
-  .btn.small { height: 30px; padding: 0 12px; font-size: 12px; }
 
   .auth-block { display: flex; align-items: center; gap: 8px; }
   .user-nick {
@@ -71,8 +70,7 @@
   }
   .user-nick:hover { filter: brightness(1.15); }
   .user-avatar, .user-avatar-fallback {
-    width: 26px; height: 26px; border-radius: 50%;
-    flex: 0 0 auto;
+    width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto;
     border: 1px solid #0a0805;
   }
   .user-avatar { object-fit: cover; }
@@ -237,7 +235,7 @@
     width: 100%; max-width: 440px; padding: 22px; border-radius: 14px;
     background: linear-gradient(180deg, #4e3d2c 0%, #3a2c1f 45%, #2a1f16 100%);
     border: 1px solid #0c0805; box-shadow: 0 20px 40px rgba(0,0,0,.85);
-    max-height: 90vh; overflow-y: auto;
+    max-height: 92vh; overflow-y: auto;
   }
   .modal h3 { margin: 0 0 14px; color: #f0e1c4; font-size: 16px; }
   .modal p { margin: 0 0 16px; color: #a89880; font-size: 12px; line-height: 1.5; }
@@ -259,6 +257,37 @@
   }
   .auth-tab { flex: 1; height: 40px; border: none; cursor: pointer; font-size: 13px; font-weight: 800; font-family: inherit; color: #a89880; background: transparent; -webkit-appearance: none; }
   .auth-tab.active { color: #fff; background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%); }
+
+  .file-label {
+    display: block; text-align: center; cursor: pointer;
+    padding: 12px; margin-bottom: 8px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; color: #e8dcc4;
+    border: 1px dashed #6b5a44;
+    background: linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.1));
+    text-shadow: 0 1px 1px rgba(0,0,0,.8);
+  }
+  .file-label:hover { border-color: #a89070; }
+  .file-label:active { background: rgba(0,0,0,.5); }
+
+  .upload-hint {
+    font-size: 11px; color: #8d8271; text-align: center;
+    margin: 6px 0 10px; line-height: 1.4;
+  }
+
+  .progress-wrap {
+    display: none; margin-bottom: 12px;
+  }
+  .progress-wrap.show { display: block; }
+  .progress-bar {
+    height: 8px; border-radius: 4px; background: #0a0805; overflow: hidden; border: 1px solid #000;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; transition: width .2s;
+    background: linear-gradient(90deg, #ff6a5e, #c9241b);
+  }
+  .progress-label {
+    font-size: 11px; color: #a89880; margin-top: 4px; text-align: center;
+  }
 
   .profile-modal { max-width: 560px; max-height: 88vh; display: flex; flex-direction: column; }
   .profile-header { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
@@ -432,14 +461,34 @@
 <!-- Модалка добавления -->
 <div class="modal-back" id="modalBack">
   <div class="modal">
-    <h3>Добавить видео по ссылке</h3>
-    <p>Вставьте прямую ссылку на MP4 / WebM. Видео появится у всех, от вашего аккаунта.</p>
+    <h3>Добавить видео</h3>
+    <p>Вставьте прямую ссылку <b>или</b> выберите файл — он загрузится в облако и станет доступен по ссылке.</p>
+
     <label>Название</label>
     <input id="inTitle" type="text" placeholder="Например: Sintel" maxlength="200">
     <label>Канал</label>
     <input id="inChannel" type="text" placeholder="Например: Blender Foundation" maxlength="100">
+
     <label>Ссылка на видеофайл</label>
     <input id="inUrl" type="url" placeholder="https://example.com/video.mp4">
+
+    <div style="text-align:center;color:#a89880;font-size:12px;margin:4px 0 12px;">— или —</div>
+
+    <label>Файл с устройства (до 200 МБ)</label>
+    <label class="file-label">
+      📁 Выбрать видео
+      <input id="inFile" type="file" accept="video/*" style="display:none;">
+    </label>
+    <div id="fileName" style="font-size:11px;color:#c8ab7e;margin-bottom:8px;word-break:break-all;"></div>
+    <div class="upload-hint">
+      Загружается на catbox.moe (до 200 МБ). Для больших файлов — GitHub Releases или 0x0.st.
+    </div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0%</div>
+    </div>
+
     <div class="row">
       <button class="btn" id="cancelBtn" type="button">Отмена</button>
       <button class="btn red" id="addBtn" type="button">Добавить</button>
@@ -514,6 +563,7 @@ const BUILTIN = [
 const USER_KEY = "oldvid_user";
 const TOKEN_KEY = "oldvid_token";
 const ADMIN_KEY = "oldvid_admin";
+const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 МБ (лимит catbox)
 
 let serverVideos = [];
 let likesMap = {};
@@ -526,6 +576,7 @@ let currentProfile = null;
 let searchQuery = "";
 let feedFilter = "all";
 let pendingCallback = null;
+let isUploading = false;
 const viewedThisSession = new Set();
 
 const $ = id => document.getElementById(id);
@@ -563,7 +614,7 @@ async function validateSession() {
 // ============================================================
 //  АВАТАР-ХЕЛПЕР
 // ============================================================
-function avatarHtml(username, size, clickable) {
+function avatarHtml(username, size) {
   const url = avatarsMap[username];
   const fallback = (username || "?").charAt(0).toUpperCase();
   const cls = size === "big" ? "author-avatar" : (size === "profile" ? "profile-avatar" : (size === "small" ? "card-author-avatar" : "user-avatar"));
@@ -741,7 +792,85 @@ function subscribeRealtime() {
 }
 
 // ============================================================
-//  ДОБАВЛЕНИЕ ВИДЕО
+//  CATBOX UPLOAD
+// ============================================================
+// Загрузка файла на catbox.moe. Возвращает Promise<string URL>.
+// onProgress(percent) вызывается при загрузке.
+function uploadToCatbox(file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append("reqtype", "fileupload");
+    fd.append("fileToUpload", file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://catbox.moe/user/api.php", true);
+    xhr.timeout = 5 * 60 * 1000;
+
+    xhr.upload.onprogress = e => {
+      if (e.lengthComputable && onProgress) {
+        onProgress(Math.round((e.loaded / e.total) * 100));
+      }
+    };
+
+    xhr.onload = () => {
+      const text = (xhr.responseText || "").trim();
+      if (xhr.status === 200 && /^https:\/\//.test(text)) {
+        resolve(text);
+      } else {
+        reject(new Error("Catbox: " + (text.slice(0, 120) || "HTTP " + xhr.status)));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Catbox недоступен (CORS/сеть)"));
+    xhr.ontimeout = () => reject(new Error("Catbox: таймаут загрузки"));
+
+    xhr.send(fd);
+  });
+}
+
+// Резерв: Litterbox (временный, до 1 ГБ, срок 72 часа)
+function uploadToLitterbox(file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append("reqtype", "fileupload");
+    fd.append("time", "72h");
+    fd.append("fileToUpload", file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://litterbox.catbox.moe/resources/internals/api.php", true);
+    xhr.timeout = 5 * 60 * 1000;
+
+    xhr.upload.onprogress = e => {
+      if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onload = () => {
+      const text = (xhr.responseText || "").trim();
+      if (xhr.status === 200 && /^https:\/\//.test(text)) resolve(text);
+      else reject(new Error("Litterbox: " + (text.slice(0, 120) || "HTTP " + xhr.status)));
+    };
+    xhr.onerror = () => reject(new Error("Litterbox недоступен"));
+    xhr.ontimeout = () => reject(new Error("Litterbox: таймаут"));
+    xhr.send(fd);
+  });
+}
+
+// Универсальная загрузка с fallback
+async function uploadVideoFile(file, onProgress) {
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("Файл больше " + (MAX_FILE_SIZE / 1024 / 1024) + " МБ — Catbox не примет");
+  }
+  try {
+    const url = await uploadToCatbox(file, onProgress);
+    return { url, provider: "catbox" };
+  } catch (e1) {
+    console.warn("Catbox не сработал, пробую Litterbox:", e1.message);
+    if (onProgress) onProgress(0);
+    const url = await uploadToLitterbox(file, onProgress);
+    return { url, provider: "litterbox", warning: e1.message };
+  }
+}
+
+// ============================================================
+//  ДОБАВЛЕНИЕ ВИДЕО (в БД)
 // ============================================================
 async function addVideo(title, channel, url) {
   const me = getCurrentUser(); const token = getCurrentToken();
@@ -829,7 +958,6 @@ async function toggleSubscription(targetUsername) {
   const me = getCurrentUser();
   if (!me) { openAuthModal("login", () => toggleSubscription(targetUsername)); return; }
   if (me === targetUsername) return;
-
   const isFollowing = (subsMap[me] || []).includes(targetUsername);
   try {
     if (isFollowing) {
@@ -859,7 +987,6 @@ async function openProfile(username) {
   if (!username) return;
   currentProfile = {
     username,
-    avatar: avatarsMap[username] || "",
     isMe: getCurrentUser() === username,
     isFollowing: (subsMap[getCurrentUser()] || []).includes(username)
   };
@@ -870,7 +997,6 @@ async function openProfile(username) {
 function renderProfileModal() {
   if (!currentProfile) return;
   const { username, isMe, isFollowing } = currentProfile;
-  const avatar = avatarsMap[username] || "";
   const userVideos = serverVideos.filter(v => v.owner === username);
   const subsCount = subsCountMap[username] || 0;
 
@@ -879,9 +1005,8 @@ function renderProfileModal() {
   $("profileStats").textContent = subsCount + " подписчиков • " + userVideos.length + " видео";
 
   const sBtn = $("profileSubscribeBtn");
-  if (isMe) {
-    sBtn.style.display = "none";
-  } else {
+  if (isMe) { sBtn.style.display = "none"; }
+  else {
     sBtn.style.display = "inline-block";
     sBtn.textContent = isFollowing ? "✓ Вы подписаны" : "Подписаться";
     sBtn.classList.toggle("subscribed", isFollowing);
@@ -891,31 +1016,30 @@ function renderProfileModal() {
   $("profileVideoCount").textContent = userVideos.length;
 
   const vList = $("profileVideos");
-  if (!userVideos.length) {
-    vList.innerHTML = '<div class="empty" style="padding:20px;">Нет видео</div>';
-  } else {
-    vList.innerHTML = userVideos.map(v =>
-      '<div class="profile-video-item" data-vid="' + v.id + '">' +
-        '<div class="pv-title">' + escapeHtml(v.title) + '</div>' +
-        '<div class="pv-stats">👁 ' + (v.views || 0) + ' • ❤️ ' + ((likesMap[v.id] || []).length) + ' • 💬 ' + ((commentsMap[v.id] || []).length) + '</div>' +
-      '</div>'
-    ).join("");
-    vList.querySelectorAll(".profile-video-item").forEach(item => {
-      item.addEventListener("click", () => {
-        const vid = Number(item.dataset.vid);
-        const video = serverVideos.find(v => v.id === vid);
-        if (video) {
-          closeProfile();
-          playVideo({
-            id: "srv_" + video.id, rawId: video.id, isCustom: true,
-            isMine: getCurrentUser() === video.owner,
-            title: video.title, channel: video.channel, tag: "Своя ссылка",
-            url: video.url, views: video.views || 0
-          });
-        }
-      });
+  if (!userVideos.length) { vList.innerHTML = '<div class="empty" style="padding:20px;">Нет видео</div>'; return; }
+
+  vList.innerHTML = userVideos.map(v =>
+    '<div class="profile-video-item" data-vid="' + v.id + '">' +
+      '<div class="pv-title">' + escapeHtml(v.title) + '</div>' +
+      '<div class="pv-stats">👁 ' + (v.views || 0) + ' • ❤️ ' + ((likesMap[v.id] || []).length) + ' • 💬 ' + ((commentsMap[v.id] || []).length) + '</div>' +
+    '</div>'
+  ).join("");
+
+  vList.querySelectorAll(".profile-video-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const vid = Number(item.dataset.vid);
+      const video = serverVideos.find(v => v.id === vid);
+      if (video) {
+        closeProfile();
+        playVideo({
+          id: "srv_" + video.id, rawId: video.id, isCustom: true,
+          isMine: getCurrentUser() === video.owner,
+          title: video.title, channel: video.channel, tag: "Своя ссылка",
+          url: video.url, views: video.views || 0
+        });
+      }
     });
-  }
+  });
 }
 
 function closeProfile() {
@@ -930,10 +1054,7 @@ async function editAvatar() {
   const url = prompt("Прямая ссылка на картинку (jpg/png):\n\nОставьте пустым, чтобы удалить аватар", current);
   if (url === null) return;
   const clean = url.trim();
-  if (clean && !/^https?:\/\//i.test(clean)) {
-    toast("Ссылка должна начинаться с http:// или https://");
-    return;
-  }
+  if (clean && !/^https?:\/\//i.test(clean)) { toast("Ссылка должна начинаться с http:// или https://"); return; }
   try {
     const { data, error } = await sb.rpc("set_avatar", { p_username: me, p_token: getCurrentToken(), p_avatar: clean });
     if (error) throw error;
@@ -1060,7 +1181,6 @@ function renderGrid() {
   const builtin = BUILTIN.map(v => ({ ...v, isCustom: false, isMine: false, owner: null, views: 0 }));
 
   let all = custom.concat(builtin);
-
   if (feedFilter === "subs") {
     if (!me) all = [];
     else {
@@ -1068,7 +1188,6 @@ function renderGrid() {
       all = all.filter(v => v.owner && followed.has(v.owner));
     }
   }
-
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     all = all.filter(v => (v.title + " " + v.channel + " " + v.tag).toLowerCase().includes(q));
@@ -1077,8 +1196,7 @@ function renderGrid() {
   grid.innerHTML = "";
   if (!all.length) {
     grid.innerHTML = '<div class="empty">' +
-      (feedFilter === "subs" ? "Подписок пока нет — зайдите в профиль автора и подпишитесь" : "Ничего не найдено") +
-      '</div>';
+      (feedFilter === "subs" ? "Подписок пока нет — зайдите в профиль автора и подпишитесь" : "Ничего не найдено") + '</div>';
     return;
   }
 
@@ -1087,11 +1205,9 @@ function renderGrid() {
     const badgeText = v.isCustom ? (v.isMine ? 'МОЁ' : 'ССЫЛКА') : 'OPEN';
     const likes = v.rawId ? (likesMap[v.rawId] || []).length : 0;
     const cmts = v.rawId ? (commentsMap[v.rawId] || []).length : 0;
-
     const authorHtml = v.owner
       ? '<span class="card-author-click" style="cursor:pointer;color:#ffb9a8;display:flex;align-items:center;gap:5px;">' +
-          avatarHtml(v.owner, "small") + escapeHtml(v.owner) +
-        '</span>'
+          avatarHtml(v.owner, "small") + escapeHtml(v.owner) + '</span>'
       : escapeHtml(v.channel);
 
     const card = document.createElement("div");
@@ -1226,10 +1342,26 @@ async function deleteVideoConfirm(id) {
 }
 
 // ============================================================
-//  ДОБАВЛЕНИЕ
+//  ДОБАВЛЕНИЕ — модалка + catbox
 // ============================================================
 const modalBack = $("modalBack");
-function openAddModal() { modalBack.classList.add("show"); setTimeout(() => $("inUrl").focus(), 150); }
+function openAddModal() {
+  resetAddModal();
+  modalBack.classList.add("show");
+  setTimeout(() => $("inUrl").focus(), 150);
+}
+function resetAddModal() {
+  $("inTitle").value = "";
+  $("inChannel").value = "";
+  $("inUrl").value = "";
+  $("inFile").value = "";
+  $("fileName").textContent = "";
+  $("progressWrap").classList.remove("show");
+  $("progressFill").style.width = "0%";
+  $("progressLabel").textContent = "0%";
+  isUploading = false;
+}
+
 $("fabAdd").addEventListener("click", () => {
   if (!getCurrentUser()) {
     toast("Войдите, чтобы добавлять видео");
@@ -1238,24 +1370,87 @@ $("fabAdd").addEventListener("click", () => {
   }
   openAddModal();
 });
+
 $("cancelBtn").addEventListener("click", () => {
+  if (isUploading) {
+    if (!confirm("Загрузка ещё идёт. Отменить?")) return;
+  }
   modalBack.classList.remove("show");
-  $("inTitle").value = $("inChannel").value = $("inUrl").value = "";
+  resetAddModal();
 });
-modalBack.addEventListener("click", e => { if (e.target === modalBack) $("cancelBtn").click(); });
+modalBack.addEventListener("click", e => {
+  if (e.target === modalBack && !isUploading) $("cancelBtn").click();
+});
+
+// Обработчик выбора файла — показываем имя и размер
+$("inFile").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (!f) {
+    $("fileName").textContent = "";
+    return;
+  }
+  const sizeMb = (f.size / 1024 / 1024).toFixed(1);
+  const big = f.size > MAX_FILE_SIZE;
+  $("fileName").innerHTML = 'Выбран: <b>' + escapeHtml(f.name) + '</b> (' + sizeMb + ' МБ)' +
+    (big ? ' <span style="color:#ff6a5e">— слишком большой, макс. 200 МБ</span>' : '');
+});
+
 $("addBtn").addEventListener("click", async () => {
+  if (isUploading) return;
   if (!getCurrentUser()) { $("cancelBtn").click(); openAuthModal("login", () => openAddModal()); return; }
-  const t = $("inTitle").value.trim();
-  const c = $("inChannel").value.trim();
-  const u = $("inUrl").value.trim();
-  if (!u) { toast("Вставьте ссылку"); return; }
-  $("addBtn").disabled = true; $("addBtn").textContent = "Добавление…";
+
+  const title = $("inTitle").value.trim();
+  const channel = $("inChannel").value.trim();
+  let url = $("inUrl").value.trim();
+  const file = $("inFile").files[0];
+
+  if (!url && !file) { toast("Вставьте ссылку или выберите файл"); return; }
+
+  isUploading = true;
+  $("addBtn").disabled = true;
+  $("addBtn").textContent = "Загрузка…";
+
   try {
-    await addVideo(t, c, u);
+    // Если выбран файл — грузим на catbox и получаем URL
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error("Файл больше 200 МБ — используйте GitHub Releases или 0x0.st");
+      }
+      $("progressWrap").classList.add("show");
+      $("progressLabel").textContent = "Загрузка на catbox… 0%";
+
+      const result = await uploadVideoFile(file, pct => {
+        $("progressFill").style.width = pct + "%";
+        $("progressLabel").textContent = "Загрузка на catbox… " + pct + "%";
+      });
+
+      url = result.url;
+      $("progressLabel").textContent = "Загружено! Сохраняю в базу…";
+
+      if (result.provider === "litterbox") {
+        toast("Catbox не сработал, файл на Litterbox (временно, 72 ч)");
+      }
+    }
+
+    // Сохраняем видео в базу
+    await addVideo(
+      title || (file ? file.name.replace(/\.[^.]+$/, "") : "Без названия"),
+      channel || (getCurrentUser() + " channel"),
+      url
+    );
+
     toast("Видео добавлено!");
-    $("cancelBtn").click();
-  } catch (e) { toast("Ошибка: " + e.message); }
-  finally { $("addBtn").disabled = false; $("addBtn").textContent = "Добавить"; }
+    modalBack.classList.remove("show");
+    resetAddModal();
+  } catch (e) {
+    console.error(e);
+    toast("Ошибка: " + e.message);
+    $("progressLabel").textContent = "Ошибка: " + e.message;
+  } finally {
+    isUploading = false;
+    $("addBtn").disabled = false;
+    $("addBtn").textContent = "Добавить";
+  }
 });
 
 // ============================================================
