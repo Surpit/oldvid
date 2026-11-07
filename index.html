@@ -52,10 +52,12 @@
     text-shadow: 0 1px 1px rgba(0,0,0,.85); border: 1px solid #131313;
     background: linear-gradient(180deg, #8c8c8c 0%, #666 46%, #4a4a4a 52%, #3a3a3a 78%, #5e5e5e 100%);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 2px 5px rgba(0,0,0,.7);
-    -webkit-appearance: none; white-space: nowrap;
+    -webkit-appearance: none; white-space: nowrap; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center;
   }
   .btn:active { transform: translateY(1px); }
   .btn.red { background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%); border-color: #5c0805; }
+  .btn.green { background: linear-gradient(180deg, #6ab96a 0%, #3a8f3a 50%, #256625 100%); border-color: #1a4a1a; }
   .btn.admin-toggle { padding: 0 12px; font-size: 16px; }
 
   .auth-block { display: flex; align-items: center; gap: 8px; }
@@ -181,7 +183,7 @@
   .comment-avatar { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; font-weight: 800; color: #fff; background: linear-gradient(180deg, #6b6b6b, #2b2b2b); border: 1px solid #0a0a0a; overflow: hidden; }
   .comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .comment-content { flex: 1; min-width: 0; }
-  .comment-author { font-size: 12.5px; font-weight: 700; color: #ffd6c9; margin-bottom: 3px; text-decoration: underline; text-decoration-color: transparent; transition: color .15s; }
+  .comment-author { font-size: 12.5px; font-weight: 700; color: #ffd6c9; margin-bottom: 3px; transition: color .15s; }
   .comment-text { font-size: 14px; color: #fff; line-height: 1.4; word-break: break-word; }
   .comment-date { font-size: 11px; color: #7a7a7a; margin-top: 4px; }
   .comment-empty { padding: 20px; text-align: center; color: #7a7a7a; font-size: 13px; }
@@ -232,7 +234,7 @@
   .modal-back { position: fixed; inset: 0; z-index: 500; display: none; place-items: center; padding: 20px; background: rgba(0,0,0,.78); }
   .modal-back.show { display: grid; }
   .modal {
-    width: 100%; max-width: 440px; padding: 22px; border-radius: 14px;
+    width: 100%; max-width: 460px; padding: 22px; border-radius: 14px;
     background: linear-gradient(180deg, #4e3d2c 0%, #3a2c1f 45%, #2a1f16 100%);
     border: 1px solid #0c0805; box-shadow: 0 20px 40px rgba(0,0,0,.85);
     max-height: 92vh; overflow-y: auto;
@@ -251,43 +253,69 @@
   .modal .row { display: flex; gap: 8px; }
   .modal .row .btn { flex: 1; height: 42px; }
 
+  /* Блок инструкции */
+  .tut-box {
+    background: rgba(0,0,0,.35);
+    border: 1px solid #0a0805;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .tut-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffb9a8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tut-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #d4c8b3;
+    line-height: 1.5;
+  }
+  .tut-step:last-child { margin-bottom: 0; }
+  .tut-step-num {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ff6a5e, #a5100a);
+    border: 1px solid #5c0805;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: grid;
+    place-items: center;
+    text-shadow: 0 1px 1px rgba(0,0,0,.6);
+    margin-top: 1px;
+  }
+  .tut-step b { color: #ffd6c9; }
+  .tut-example {
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    color: #b6ffb6;
+    background: rgba(0,0,0,.5);
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+    word-break: break-all;
+    border: 1px solid #0a0805;
+  }
+
   .auth-tabs {
     display: flex; margin-bottom: 18px; border-radius: 9px; overflow: hidden;
     border: 1px solid #0a0805; background: linear-gradient(180deg, #2a1f16, #1a120c);
   }
   .auth-tab { flex: 1; height: 40px; border: none; cursor: pointer; font-size: 13px; font-weight: 800; font-family: inherit; color: #a89880; background: transparent; -webkit-appearance: none; }
   .auth-tab.active { color: #fff; background: linear-gradient(180deg, #ff6a5e 0%, #e0251c 46%, #a5100a 52%, #c9241b 78%, #ff5446 100%); }
-
-  .file-label {
-    display: block; text-align: center; cursor: pointer;
-    padding: 12px; margin-bottom: 8px; border-radius: 8px;
-    font-size: 13px; font-weight: 700; color: #e8dcc4;
-    border: 1px dashed #6b5a44;
-    background: linear-gradient(180deg, rgba(0,0,0,.3), rgba(0,0,0,.1));
-    text-shadow: 0 1px 1px rgba(0,0,0,.8);
-  }
-  .file-label:hover { border-color: #a89070; }
-  .file-label:active { background: rgba(0,0,0,.5); }
-
-  .upload-hint {
-    font-size: 11px; color: #8d8271; text-align: center;
-    margin: 6px 0 10px; line-height: 1.4;
-  }
-
-  .progress-wrap {
-    display: none; margin-bottom: 12px;
-  }
-  .progress-wrap.show { display: block; }
-  .progress-bar {
-    height: 8px; border-radius: 4px; background: #0a0805; overflow: hidden; border: 1px solid #000;
-  }
-  .progress-fill {
-    height: 100%; width: 0%; transition: width .2s;
-    background: linear-gradient(90deg, #ff6a5e, #c9241b);
-  }
-  .progress-label {
-    font-size: 11px; color: #a89880; margin-top: 4px; text-align: center;
-  }
 
   .profile-modal { max-width: 560px; max-height: 88vh; display: flex; flex-direction: column; }
   .profile-header { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
@@ -458,38 +486,40 @@
   </div>
 </div>
 
-<!-- Модалка добавления -->
+<!-- Модалка добавления видео -->
 <div class="modal-back" id="modalBack">
   <div class="modal">
     <h3>Добавить видео</h3>
-    <p>Вставьте прямую ссылку <b>или</b> выберите файл — он загрузится в облако и станет доступен по ссылке.</p>
+
+    <div class="tut-box">
+      <div class="tut-title">📋 Как получить ссылку</div>
+      <div class="tut-step">
+        <div class="tut-step-num">1</div>
+        <div>Нажмите кнопку <b>«Открыть catbox.moe»</b> ниже — откроется сайт в новой вкладке</div>
+      </div>
+      <div class="tut-step">
+        <div class="tut-step-num">2</div>
+        <div>Нажмите <b>«Choose Files»</b>, выберите видео (до 200 МБ), потом <b>«Upload»</b></div>
+      </div>
+      <div class="tut-step">
+        <div class="tut-step-num">3</div>
+        <div>Скопируйте появившуюся ссылку и вставьте в поле ниже</div>
+      </div>
+      <div class="tut-example">https://files.catbox.moe/abc123.mp4</div>
+    </div>
+
+    <a href="https://catbox.moe/" target="_blank" rel="noopener" class="btn green" style="width:100%;height:44px;margin-bottom:16px;font-size:14px;">
+      🌐 Открыть catbox.moe
+    </a>
 
     <label>Название</label>
     <input id="inTitle" type="text" placeholder="Например: Sintel" maxlength="200">
     <label>Канал</label>
     <input id="inChannel" type="text" placeholder="Например: Blender Foundation" maxlength="100">
-
     <label>Ссылка на видеофайл</label>
-    <input id="inUrl" type="url" placeholder="https://example.com/video.mp4">
+    <input id="inUrl" type="url" placeholder="https://files.catbox.moe/abc123.mp4">
 
-    <div style="text-align:center;color:#a89880;font-size:12px;margin:4px 0 12px;">— или —</div>
-
-    <label>Файл с устройства (до 200 МБ)</label>
-    <label class="file-label">
-      📁 Выбрать видео
-      <input id="inFile" type="file" accept="video/*" style="display:none;">
-    </label>
-    <div id="fileName" style="font-size:11px;color:#c8ab7e;margin-bottom:8px;word-break:break-all;"></div>
-    <div class="upload-hint">
-      Загружается на catbox.moe (до 200 МБ). Для больших файлов — GitHub Releases или 0x0.st.
-    </div>
-
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-label" id="progressLabel">0%</div>
-    </div>
-
-    <div class="row">
+    <div class="row" style="margin-top:14px;">
       <button class="btn" id="cancelBtn" type="button">Отмена</button>
       <button class="btn red" id="addBtn" type="button">Добавить</button>
     </div>
@@ -535,151 +565,76 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ============================================================
-//  НАСТРОЙКИ
-// ============================================================
 const SUPABASE_URL  = "https://zmvcbcoqhgkycnbskhak.supabase.co";
 const SUPABASE_ANON = "sb_publishable_agTPXSKIj-R7Oq_-LrfEWA_kcfiPoxF";
 const ADMIN_PASSWORD = "itutgy98trh9877857yutuinhjgfug";
-// ============================================================
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 const BUILTIN = [
-  { id: "b1", title: "Big Buck Bunny", channel: "Blender Foundation", tag: "Анимация", dur: "9:56",
-    url: "https://media.w3.org/2010/05/bunny/movie.mp4" },
-  { id: "b2", title: "Sintel", channel: "Blender Foundation", tag: "Анимация", dur: "14:48",
-    url: "https://media.w3.org/2010/05/sintel/trailer.mp4" },
-  { id: "b3", title: "Flower (MDN)", channel: "MDN Samples", tag: "Демо", dur: "0:30",
-    url: "https://mdn.github.io/shared-assets/videos/flower.mp4" },
-  { id: "b4", title: "W3C Movie Sample", channel: "W3C Media", tag: "Демо", dur: "0:32",
-    url: "https://media.w3.org/2010/05/video/movie_300.mp4" },
-  { id: "b5", title: "Elephants Dream", channel: "Blender Foundation", tag: "Анимация", dur: "10:53",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
-  { id: "b6", title: "Tears of Steel", channel: "Blender Foundation", tag: "Sci-Fi", dur: "12:14",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" }
+  { id: "b1", title: "Big Buck Bunny", channel: "Blender Foundation", tag: "Анимация", dur: "9:56", url: "https://media.w3.org/2010/05/bunny/movie.mp4" },
+  { id: "b2", title: "Sintel", channel: "Blender Foundation", tag: "Анимация", dur: "14:48", url: "https://media.w3.org/2010/05/sintel/trailer.mp4" },
+  { id: "b3", title: "Flower (MDN)", channel: "MDN Samples", tag: "Демо", dur: "0:30", url: "https://mdn.github.io/shared-assets/videos/flower.mp4" },
+  { id: "b4", title: "W3C Movie Sample", channel: "W3C Media", tag: "Демо", dur: "0:32", url: "https://media.w3.org/2010/05/video/movie_300.mp4" },
+  { id: "b5", title: "Elephants Dream", channel: "Blender Foundation", tag: "Анимация", dur: "10:53", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" },
+  { id: "b6", title: "Tears of Steel", channel: "Blender Foundation", tag: "Sci-Fi", dur: "12:14", url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4" }
 ];
 
 const USER_KEY = "oldvid_user";
 const TOKEN_KEY = "oldvid_token";
 const ADMIN_KEY = "oldvid_admin";
-const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 МБ (лимит catbox)
 
-let serverVideos = [];
-let likesMap = {};
-let commentsMap = {};
-let avatarsMap = {};
-let subsMap = {};
-let subsCountMap = {};
-let currentVideo = null;
-let currentProfile = null;
-let searchQuery = "";
-let feedFilter = "all";
-let pendingCallback = null;
-let isUploading = false;
+let serverVideos = [], likesMap = {}, commentsMap = {}, avatarsMap = {}, subsMap = {}, subsCountMap = {};
+let currentVideo = null, currentProfile = null, searchQuery = "", feedFilter = "all", pendingCallback = null;
 const viewedThisSession = new Set();
-
 const $ = id => document.getElementById(id);
-const grid = $("grid");
-const player = $("player");
-const errBox = $("err");
+const grid = $("grid"), player = $("player"), errBox = $("err");
 
 function getCurrentUser() { return localStorage.getItem(USER_KEY); }
 function getCurrentToken() { return localStorage.getItem(TOKEN_KEY); }
 function isAdmin() { return localStorage.getItem(ADMIN_KEY) === "1"; }
-
-function setSession(username, token) {
-  localStorage.setItem(USER_KEY, username);
-  localStorage.setItem(TOKEN_KEY, token);
-  updateAuthUI();
-}
+function setSession(u, t) { localStorage.setItem(USER_KEY, u); localStorage.setItem(TOKEN_KEY, t); updateAuthUI(); }
 function logoutUser() {
-  localStorage.removeItem(USER_KEY);
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(ADMIN_KEY);
-  updateAuthUI();
-  renderGrid();
-  renderVideoActions();
+  localStorage.removeItem(USER_KEY); localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(ADMIN_KEY);
+  updateAuthUI(); renderGrid(); renderVideoActions();
 }
-
 async function validateSession() {
-  const u = getCurrentUser(); const t = getCurrentToken();
+  const u = getCurrentUser(), t = getCurrentToken();
   if (!u || !t) return;
-  try {
-    const { data, error } = await sb.rpc("verify_token", { p_username: u, p_token: t });
-    if (error || !data) logoutUser();
-  } catch (e) {}
+  try { const { data, error } = await sb.rpc("verify_token", { p_username: u, p_token: t }); if (error || !data) logoutUser(); } catch (e) {}
 }
-
-// ============================================================
-//  АВАТАР-ХЕЛПЕР
-// ============================================================
 function avatarHtml(username, size) {
   const url = avatarsMap[username];
   const fallback = (username || "?").charAt(0).toUpperCase();
   const cls = size === "big" ? "author-avatar" : (size === "profile" ? "profile-avatar" : (size === "small" ? "card-author-avatar" : "user-avatar"));
   const fbCls = size === "big" ? "author-avatar-fallback" : (size === "profile" ? "profile-avatar-fallback" : (size === "small" ? "card-author-fallback" : "user-avatar-fallback"));
-  if (url) {
-    return '<img class="' + cls + '" src="' + escapeHtml(url) + '" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\';">' +
-           '<span class="' + fbCls + '" style="display:none;">' + escapeHtml(fallback) + '</span>';
-  }
+  if (url) return '<img class="' + cls + '" src="' + escapeHtml(url) + '" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\';"><span class="' + fbCls + '" style="display:none;">' + escapeHtml(fallback) + '</span>';
   return '<span class="' + fbCls + '">' + escapeHtml(fallback) + '</span>';
 }
-
 function updateAuthUI() {
-  const user = getCurrentUser();
-  const box = $("authBlock");
+  const user = getCurrentUser(), box = $("authBlock");
   if (user) {
     const badge = isAdmin() ? '<span class="admin-badge">ADMIN</span>' : "";
-    box.innerHTML =
-      '<span class="user-nick" id="userNickClick" title="Мой профиль">' +
-        avatarHtml(user, "header") +
-        '<span class="user-name-text">' + escapeHtml(user) + '</span>' +
-        badge +
-      '</span>' +
-      '<button class="btn" id="myProfileBtn">Профиль</button>' +
-      '<button class="btn" id="logoutBtn">Выйти</button>';
+    box.innerHTML = '<span class="user-nick" id="userNickClick" title="Мой профиль">' + avatarHtml(user, "header") + '<span class="user-name-text">' + escapeHtml(user) + '</span>' + badge + '</span><button class="btn" id="myProfileBtn">Профиль</button><button class="btn" id="logoutBtn">Выйти</button>';
     $("userNickClick").addEventListener("click", () => openProfile(user));
     $("myProfileBtn").addEventListener("click", () => openProfile(user));
-    $("logoutBtn").addEventListener("click", () => {
-      if (confirm("Выйти из аккаунта?")) logoutUser();
-    });
+    $("logoutBtn").addEventListener("click", () => { if (confirm("Выйти из аккаунта?")) logoutUser(); });
   } else {
     box.innerHTML = '<button class="btn red" id="loginBtn">Войти</button>';
     $("loginBtn").addEventListener("click", () => openAuthModal("login"));
   }
 }
 
-// ============================================================
-//  МОДАЛКА АВТОРИЗАЦИИ
-// ============================================================
-function openAuthModal(tab, callback) {
-  pendingCallback = callback || null;
-  $("authBack").classList.add("show");
-  switchAuthTab(tab || "login");
-  setTimeout(() => {
-    if (tab === "register") $("regUsername").focus();
-    else $("loginUsername").focus();
-  }, 150);
-}
-function closeAuthModal() {
-  $("authBack").classList.remove("show");
-  pendingCallback = null;
-  ["loginUsername","loginPassword","regUsername","regPassword","regPassword2"].forEach(id => $(id).value = "");
-}
-function switchAuthTab(tab) {
-  document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
-  $("loginPane").style.display = tab === "login" ? "block" : "none";
-  $("registerPane").style.display = tab === "register" ? "block" : "none";
-}
+function openAuthModal(tab, cb) { pendingCallback = cb || null; $("authBack").classList.add("show"); switchAuthTab(tab || "login"); setTimeout(() => { if (tab === "register") $("regUsername").focus(); else $("loginUsername").focus(); }, 150); }
+function closeAuthModal() { $("authBack").classList.remove("show"); pendingCallback = null; ["loginUsername","loginPassword","regUsername","regPassword","regPassword2"].forEach(id => $(id).value = ""); }
+function switchAuthTab(tab) { document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab)); $("loginPane").style.display = tab === "login" ? "block" : "none"; $("registerPane").style.display = tab === "register" ? "block" : "none"; }
 document.querySelectorAll(".auth-tab").forEach(t => t.addEventListener("click", () => switchAuthTab(t.dataset.tab)));
 $("authBack").addEventListener("click", e => { if (e.target === $("authBack")) closeAuthModal(); });
 $("loginCancel").addEventListener("click", closeAuthModal);
 $("regCancel").addEventListener("click", closeAuthModal);
 
 $("loginSubmit").addEventListener("click", async () => {
-  const username = $("loginUsername").value.trim();
-  const password = $("loginPassword").value;
+  const username = $("loginUsername").value.trim(), password = $("loginPassword").value;
   if (!username || !password) { toast("Заполните все поля"); return; }
   $("loginSubmit").disabled = true; $("loginSubmit").textContent = "Вход…";
   try {
@@ -689,17 +644,14 @@ $("loginSubmit").addEventListener("click", async () => {
     setSession(data[0].real_username, data[0].token);
     await loadAll();
     toast("Добро пожаловать, " + data[0].real_username + "!");
-    const cb = pendingCallback; closeAuthModal();
-    if (cb) setTimeout(cb, 100);
+    const cb = pendingCallback; closeAuthModal(); if (cb) setTimeout(cb, 100);
   } catch (e) { toast("Ошибка: " + e.message); }
   finally { $("loginSubmit").disabled = false; $("loginSubmit").textContent = "Войти"; }
 });
 $("loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") $("loginSubmit").click(); });
 
 $("regSubmit").addEventListener("click", async () => {
-  const username = $("regUsername").value.trim();
-  const p1 = $("regPassword").value;
-  const p2 = $("regPassword2").value;
+  const username = $("regUsername").value.trim(), p1 = $("regPassword").value, p2 = $("regPassword2").value;
   if (!username) { toast("Введите логин"); return; }
   if (username.length < 2 || username.length > 30) { toast("Логин 2–30 символов"); return; }
   if (!/^[a-zA-Z0-9_а-яА-ЯёЁ]+$/.test(username)) { toast("Только буквы, цифры и _"); return; }
@@ -716,17 +668,13 @@ $("regSubmit").addEventListener("click", async () => {
       setSession(loginRes.data[0].real_username, loginRes.data[0].token);
       await loadAll();
       toast("Добро пожаловать, " + loginRes.data[0].real_username + "!");
-      const cb = pendingCallback; closeAuthModal();
-      if (cb) setTimeout(cb, 100);
+      const cb = pendingCallback; closeAuthModal(); if (cb) setTimeout(cb, 100);
     } else { toast("Зарегистрированы! Войдите."); switchAuthTab("login"); $("loginUsername").value = username; }
   } catch (e) { toast("Ошибка: " + e.message); }
   finally { $("regSubmit").disabled = false; $("regSubmit").textContent = "Зарегистрироваться"; }
 });
 $("regPassword2").addEventListener("keydown", e => { if (e.key === "Enter") $("regSubmit").click(); });
 
-// ============================================================
-//  ЗАГРУЗКА ДАННЫХ
-// ============================================================
 async function loadAll() {
   try {
     const [vRes, lRes, cRes, sRes, aRes] = await Promise.all([
@@ -736,50 +684,23 @@ async function loadAll() {
       sb.from("subscriptions").select("subscriber, subscribed_to"),
       sb.rpc("get_all_avatars")
     ]);
-
     if (vRes.error) throw vRes.error;
     serverVideos = vRes.data || [];
-
-    likesMap = {};
-    (lRes.data || []).forEach(l => {
-      if (!likesMap[l.video_id]) likesMap[l.video_id] = [];
-      likesMap[l.video_id].push(l.username);
-    });
-
-    commentsMap = {};
-    (cRes.data || []).forEach(c => {
-      if (!commentsMap[c.video_id]) commentsMap[c.video_id] = [];
-      commentsMap[c.video_id].push(c);
-    });
-
-    subsMap = {};
-    subsCountMap = {};
+    likesMap = {}; (lRes.data || []).forEach(l => { if (!likesMap[l.video_id]) likesMap[l.video_id] = []; likesMap[l.video_id].push(l.username); });
+    commentsMap = {}; (cRes.data || []).forEach(c => { if (!commentsMap[c.video_id]) commentsMap[c.video_id] = []; commentsMap[c.video_id].push(c); });
+    subsMap = {}; subsCountMap = {};
     (sRes.data || []).forEach(s => {
       if (!subsMap[s.subscriber]) subsMap[s.subscriber] = [];
       subsMap[s.subscriber].push(s.subscribed_to);
       subsCountMap[s.subscribed_to] = (subsCountMap[s.subscribed_to] || 0) + 1;
     });
-
-    avatarsMap = {};
-    (aRes.data || []).forEach(a => {
-      if (a.avatar_url) avatarsMap[a.username] = a.avatar_url;
-    });
-
+    avatarsMap = {}; (aRes.data || []).forEach(a => { if (a.avatar_url) avatarsMap[a.username] = a.avatar_url; });
     renderGrid();
-    if (currentVideo && currentVideo.rawId) {
-      const updated = serverVideos.find(v => v.id === currentVideo.rawId);
-      if (updated) currentVideo.views = updated.views;
-    }
-    renderVideoActions();
-    renderComments();
-    updateMeta();
-    updateAuthUI();
+    if (currentVideo && currentVideo.rawId) { const u = serverVideos.find(v => v.id === currentVideo.rawId); if (u) currentVideo.views = u.views; }
+    renderVideoActions(); renderComments(); updateMeta(); updateAuthUI();
     if ($("profileBack").classList.contains("show") && currentProfile) renderProfileModal();
     if ($("adminBack").classList.contains("show")) renderAdminPanel();
-  } catch (e) {
-    console.error("loadAll:", e);
-    toast("Ошибка загрузки: " + e.message);
-  }
+  } catch (e) { console.error("loadAll:", e); toast("Ошибка загрузки: " + e.message); }
 }
 
 function subscribeRealtime() {
@@ -791,89 +712,8 @@ function subscribeRealtime() {
     .subscribe();
 }
 
-// ============================================================
-//  CATBOX UPLOAD
-// ============================================================
-// Загрузка файла на catbox.moe. Возвращает Promise<string URL>.
-// onProgress(percent) вызывается при загрузке.
-function uploadToCatbox(file, onProgress) {
-  return new Promise((resolve, reject) => {
-    const fd = new FormData();
-    fd.append("reqtype", "fileupload");
-    fd.append("fileToUpload", file);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://catbox.moe/user/api.php", true);
-    xhr.timeout = 5 * 60 * 1000;
-
-    xhr.upload.onprogress = e => {
-      if (e.lengthComputable && onProgress) {
-        onProgress(Math.round((e.loaded / e.total) * 100));
-      }
-    };
-
-    xhr.onload = () => {
-      const text = (xhr.responseText || "").trim();
-      if (xhr.status === 200 && /^https:\/\//.test(text)) {
-        resolve(text);
-      } else {
-        reject(new Error("Catbox: " + (text.slice(0, 120) || "HTTP " + xhr.status)));
-      }
-    };
-    xhr.onerror = () => reject(new Error("Catbox недоступен (CORS/сеть)"));
-    xhr.ontimeout = () => reject(new Error("Catbox: таймаут загрузки"));
-
-    xhr.send(fd);
-  });
-}
-
-// Резерв: Litterbox (временный, до 1 ГБ, срок 72 часа)
-function uploadToLitterbox(file, onProgress) {
-  return new Promise((resolve, reject) => {
-    const fd = new FormData();
-    fd.append("reqtype", "fileupload");
-    fd.append("time", "72h");
-    fd.append("fileToUpload", file);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://litterbox.catbox.moe/resources/internals/api.php", true);
-    xhr.timeout = 5 * 60 * 1000;
-
-    xhr.upload.onprogress = e => {
-      if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
-    };
-    xhr.onload = () => {
-      const text = (xhr.responseText || "").trim();
-      if (xhr.status === 200 && /^https:\/\//.test(text)) resolve(text);
-      else reject(new Error("Litterbox: " + (text.slice(0, 120) || "HTTP " + xhr.status)));
-    };
-    xhr.onerror = () => reject(new Error("Litterbox недоступен"));
-    xhr.ontimeout = () => reject(new Error("Litterbox: таймаут"));
-    xhr.send(fd);
-  });
-}
-
-// Универсальная загрузка с fallback
-async function uploadVideoFile(file, onProgress) {
-  if (file.size > MAX_FILE_SIZE) {
-    throw new Error("Файл больше " + (MAX_FILE_SIZE / 1024 / 1024) + " МБ — Catbox не примет");
-  }
-  try {
-    const url = await uploadToCatbox(file, onProgress);
-    return { url, provider: "catbox" };
-  } catch (e1) {
-    console.warn("Catbox не сработал, пробую Litterbox:", e1.message);
-    if (onProgress) onProgress(0);
-    const url = await uploadToLitterbox(file, onProgress);
-    return { url, provider: "litterbox", warning: e1.message };
-  }
-}
-
-// ============================================================
-//  ДОБАВЛЕНИЕ ВИДЕО (в БД)
-// ============================================================
 async function addVideo(title, channel, url) {
-  const me = getCurrentUser(); const token = getCurrentToken();
+  const me = getCurrentUser(), token = getCurrentToken();
   if (!me || !token) throw new Error("Войдите в аккаунт");
   const v = await sb.rpc("verify_token", { p_username: me, p_token: token });
   if (v.error || !v.data) { logoutUser(); throw new Error("Сессия истекла"); }
@@ -889,34 +729,22 @@ async function addVideo(title, channel, url) {
   return data;
 }
 
-// ============================================================
-//  ПРОСМОТРЫ
-// ============================================================
 async function incrementViews(videoId) {
   if (viewedThisSession.has(videoId)) return;
   viewedThisSession.add(videoId);
   try {
     const { data, error } = await sb.rpc("increment_video_views", { p_video_id: videoId });
     if (error) return;
-    if (currentVideo && currentVideo.rawId === videoId) {
-      currentVideo.views = data;
-      updateMeta();
-    }
-    const lv = serverVideos.find(v => v.id === videoId);
-    if (lv) lv.views = data;
+    if (currentVideo && currentVideo.rawId === videoId) { currentVideo.views = data; updateMeta(); }
+    const lv = serverVideos.find(v => v.id === videoId); if (lv) lv.views = data;
   } catch (e) {}
 }
 
-// ============================================================
-//  ЛАЙКИ
-// ============================================================
 async function toggleLike() {
   const me = getCurrentUser();
   if (!me) { openAuthModal("login", () => toggleLike()); return; }
   if (!currentVideo || !currentVideo.rawId) return;
-  const vid = currentVideo.rawId;
-  const list = likesMap[vid] || [];
-  const liked = list.includes(me);
+  const vid = currentVideo.rawId, list = likesMap[vid] || [], liked = list.includes(me);
   try {
     if (liked) {
       const { error } = await sb.from("likes").delete().eq("video_id", vid).eq("username", me);
@@ -927,71 +755,52 @@ async function toggleLike() {
       if (error) throw error;
       likesMap[vid] = list.concat([me]);
     }
-    renderVideoActions();
-    renderGrid();
+    renderVideoActions(); renderGrid();
   } catch (e) { toast("Ошибка лайка: " + e.message); }
 }
 
-// ============================================================
-//  КОММЕНТАРИИ
-// ============================================================
 async function submitComment(text) {
   const me = getCurrentUser();
   if (!me) { openAuthModal("login", () => submitComment(text)); return; }
   if (!currentVideo || !currentVideo.rawId) return;
   if (!text.trim()) return;
   try {
-    const { error } = await sb.from("comments").insert([{
-      video_id: currentVideo.rawId,
-      username: me,
-      text: text.trim()
-    }]);
+    const { error } = await sb.from("comments").insert([{ video_id: currentVideo.rawId, username: me, text: text.trim() }]);
     if (error) throw error;
     $("commentInput").value = "";
   } catch (e) { toast("Ошибка: " + e.message); }
 }
 
-// ============================================================
-//  ПОДПИСКИ
-// ============================================================
-async function toggleSubscription(targetUsername) {
+async function toggleSubscription(target) {
   const me = getCurrentUser();
-  if (!me) { openAuthModal("login", () => toggleSubscription(targetUsername)); return; }
-  if (me === targetUsername) return;
-  const isFollowing = (subsMap[me] || []).includes(targetUsername);
+  if (!me) { openAuthModal("login", () => toggleSubscription(target)); return; }
+  if (me === target) return;
+  const isFollowing = (subsMap[me] || []).includes(target);
   try {
     if (isFollowing) {
-      const { error } = await sb.from("subscriptions").delete().eq("subscriber", me).eq("subscribed_to", targetUsername);
+      const { error } = await sb.from("subscriptions").delete().eq("subscriber", me).eq("subscribed_to", target);
       if (error) throw error;
-      subsMap[me] = subsMap[me].filter(x => x !== targetUsername);
-      subsCountMap[targetUsername] = Math.max(0, (subsCountMap[targetUsername] || 1) - 1);
-      toast("Вы отписались от " + targetUsername);
+      subsMap[me] = subsMap[me].filter(x => x !== target);
+      subsCountMap[target] = Math.max(0, (subsCountMap[target] || 1) - 1);
+      toast("Вы отписались от " + target);
     } else {
-      const { error } = await sb.from("subscriptions").insert([{ subscriber: me, subscribed_to: targetUsername }]);
+      const { error } = await sb.from("subscriptions").insert([{ subscriber: me, subscribed_to: target }]);
       if (error) throw error;
       if (!subsMap[me]) subsMap[me] = [];
-      subsMap[me].push(targetUsername);
-      subsCountMap[targetUsername] = (subsCountMap[targetUsername] || 0) + 1;
-      toast("Вы подписались на " + targetUsername);
+      subsMap[me].push(target);
+      subsCountMap[target] = (subsCountMap[target] || 0) + 1;
+      toast("Вы подписались на " + target);
     }
     renderVideoActions();
-    if (currentProfile && currentProfile.username === targetUsername) renderProfileModal();
+    if (currentProfile && currentProfile.username === target) renderProfileModal();
     renderGrid();
   } catch (e) { toast("Ошибка: " + e.message); }
 }
 
-// ============================================================
-//  ПРОФИЛЬ
-// ============================================================
 async function openProfile(username) {
   if (!username) return;
-  currentProfile = {
-    username,
-    isMe: getCurrentUser() === username,
-    isFollowing: (subsMap[getCurrentUser()] || []).includes(username)
-  };
-  renderProfileModal();
-  $("profileBack").classList.add("show");
+  currentProfile = { username, isMe: getCurrentUser() === username, isFollowing: (subsMap[getCurrentUser()] || []).includes(username) };
+  renderProfileModal(); $("profileBack").classList.add("show");
 }
 
 function renderProfileModal() {
@@ -999,58 +808,34 @@ function renderProfileModal() {
   const { username, isMe, isFollowing } = currentProfile;
   const userVideos = serverVideos.filter(v => v.owner === username);
   const subsCount = subsCountMap[username] || 0;
-
   $("profileAvatarBox").innerHTML = avatarHtml(username, "profile");
   $("profileName").textContent = username;
   $("profileStats").textContent = subsCount + " подписчиков • " + userVideos.length + " видео";
-
   const sBtn = $("profileSubscribeBtn");
   if (isMe) { sBtn.style.display = "none"; }
-  else {
-    sBtn.style.display = "inline-block";
-    sBtn.textContent = isFollowing ? "✓ Вы подписаны" : "Подписаться";
-    sBtn.classList.toggle("subscribed", isFollowing);
-  }
-
+  else { sBtn.style.display = "inline-block"; sBtn.textContent = isFollowing ? "✓ Вы подписаны" : "Подписаться"; sBtn.classList.toggle("subscribed", isFollowing); }
   $("editAvatarBtn").style.display = isMe ? "inline-block" : "none";
   $("profileVideoCount").textContent = userVideos.length;
-
   const vList = $("profileVideos");
   if (!userVideos.length) { vList.innerHTML = '<div class="empty" style="padding:20px;">Нет видео</div>'; return; }
-
-  vList.innerHTML = userVideos.map(v =>
-    '<div class="profile-video-item" data-vid="' + v.id + '">' +
-      '<div class="pv-title">' + escapeHtml(v.title) + '</div>' +
-      '<div class="pv-stats">👁 ' + (v.views || 0) + ' • ❤️ ' + ((likesMap[v.id] || []).length) + ' • 💬 ' + ((commentsMap[v.id] || []).length) + '</div>' +
-    '</div>'
-  ).join("");
-
+  vList.innerHTML = userVideos.map(v => '<div class="profile-video-item" data-vid="' + v.id + '"><div class="pv-title">' + escapeHtml(v.title) + '</div><div class="pv-stats">👁 ' + (v.views || 0) + ' • ❤️ ' + ((likesMap[v.id] || []).length) + ' • 💬 ' + ((commentsMap[v.id] || []).length) + '</div></div>').join("");
   vList.querySelectorAll(".profile-video-item").forEach(item => {
     item.addEventListener("click", () => {
       const vid = Number(item.dataset.vid);
       const video = serverVideos.find(v => v.id === vid);
       if (video) {
         closeProfile();
-        playVideo({
-          id: "srv_" + video.id, rawId: video.id, isCustom: true,
-          isMine: getCurrentUser() === video.owner,
-          title: video.title, channel: video.channel, tag: "Своя ссылка",
-          url: video.url, views: video.views || 0
-        });
+        playVideo({ id: "srv_" + video.id, rawId: video.id, isCustom: true, isMine: getCurrentUser() === video.owner, title: video.title, channel: video.channel, tag: "Своя ссылка", url: video.url, views: video.views || 0 });
       }
     });
   });
 }
 
-function closeProfile() {
-  $("profileBack").classList.remove("show");
-  currentProfile = null;
-}
+function closeProfile() { $("profileBack").classList.remove("show"); currentProfile = null; }
 
 async function editAvatar() {
   if (!currentProfile || !currentProfile.isMe) return;
-  const me = getCurrentUser();
-  const current = avatarsMap[me] || "";
+  const me = getCurrentUser(), current = avatarsMap[me] || "";
   const url = prompt("Прямая ссылка на картинку (jpg/png):\n\nОставьте пустым, чтобы удалить аватар", current);
   if (url === null) return;
   const clean = url.trim();
@@ -1060,10 +845,7 @@ async function editAvatar() {
     if (error) throw error;
     if (!data) throw new Error("Не удалось обновить");
     if (clean) avatarsMap[me] = clean; else delete avatarsMap[me];
-    renderProfileModal();
-    updateAuthUI();
-    updateMeta();
-    renderGrid();
+    renderProfileModal(); updateAuthUI(); updateMeta(); renderGrid();
     toast("Аватар обновлён");
   } catch (e) { toast("Ошибка: " + e.message); }
 }
@@ -1073,48 +855,30 @@ $("profileBack").addEventListener("click", e => { if (e.target === $("profileBac
 $("profileSubscribeBtn").addEventListener("click", () => { if (currentProfile) toggleSubscription(currentProfile.username); });
 $("editAvatarBtn").addEventListener("click", editAvatar);
 
-// ============================================================
-//  РЕНДЕР МЕТА
-// ============================================================
 function updateMeta() {
   if (!currentVideo) return;
   $("vTitle").textContent = currentVideo.title;
   $("vTag").textContent = currentVideo.tag || "Своя ссылка";
   $("vViews").textContent = (currentVideo.views || 0).toLocaleString("ru") + " просмотров";
-
   const serverV = currentVideo.rawId ? serverVideos.find(v => v.id === currentVideo.rawId) : null;
   const owner = serverV ? serverV.owner : null;
-  const ch = $("vChannel");
-  const avBox = $("vAuthorAvatarBox");
-
+  const ch = $("vChannel"), avBox = $("vAuthorAvatarBox");
   if (owner) {
     avBox.innerHTML = avatarHtml(owner, "big");
-    ch.textContent = owner;
-    ch.classList.add("author-link");
-    ch.onclick = () => openProfile(owner);
+    ch.textContent = owner; ch.classList.add("author-link"); ch.onclick = () => openProfile(owner);
   } else {
     avBox.innerHTML = '<div class="author-avatar-fallback">🎬</div>';
-    ch.textContent = currentVideo.channel || "—";
-    ch.classList.remove("author-link");
-    ch.onclick = null;
+    ch.textContent = currentVideo.channel || "—"; ch.classList.remove("author-link"); ch.onclick = null;
   }
 }
 
 function renderVideoActions() {
-  if (!currentVideo) {
-    $("videoActions").style.display = "none";
-    $("commentsSection").style.display = "none";
-    return;
-  }
-  $("videoActions").style.display = "flex";
-  $("commentsSection").style.display = "block";
-  const me = getCurrentUser();
-  const vid = currentVideo.rawId;
-  const list = vid ? (likesMap[vid] || []) : [];
-  const liked = me && list.includes(me);
+  if (!currentVideo) { $("videoActions").style.display = "none"; $("commentsSection").style.display = "none"; return; }
+  $("videoActions").style.display = "flex"; $("commentsSection").style.display = "block";
+  const me = getCurrentUser(), vid = currentVideo.rawId;
+  const list = vid ? (likesMap[vid] || []) : [], liked = me && list.includes(me);
   $("likeBtn").classList.toggle("liked", !!liked);
   $("likeBtn").innerHTML = (liked ? "❤️" : "🤍") + ' <span id="likeCount">' + list.length + '</span>';
-
   const serverV = vid ? serverVideos.find(v => v.id === vid) : null;
   const owner = serverV ? serverV.owner : null;
   const sBtn = $("subscribeBtn");
@@ -1124,190 +888,108 @@ function renderVideoActions() {
     sBtn.textContent = following ? "✓ Вы подписаны" : "Подписаться на " + owner;
     sBtn.classList.toggle("subscribed", following);
     sBtn.onclick = () => toggleSubscription(owner);
-  } else {
-    sBtn.style.display = "none";
-    sBtn.onclick = null;
-  }
-
+  } else { sBtn.style.display = "none"; sBtn.onclick = null; }
   const cmtCount = vid ? (commentsMap[vid] || []).length : 0;
   $("cmtCountTop").textContent = "💬 " + cmtCount;
   $("cmtCount").textContent = "(" + cmtCount + ")";
-
-  const note = $("commentLoginNote");
-  const form = $("commentForm");
+  const note = $("commentLoginNote"), form = $("commentForm");
   if (vid && me) { note.style.display = "none"; form.style.display = "flex"; }
   else { note.style.display = "block"; form.style.display = "none"; }
 }
 
 function renderComments() {
   if (!currentVideo || !currentVideo.rawId) return;
-  const list = commentsMap[currentVideo.rawId] || [];
-  const wrap = $("commentsList");
+  const list = commentsMap[currentVideo.rawId] || [], wrap = $("commentsList");
   if (!list.length) { wrap.innerHTML = '<div class="comment-empty">Комментариев пока нет. Будьте первым!</div>'; return; }
   wrap.innerHTML = list.map(c => {
-    const url = avatarsMap[c.username];
-    const fallback = (c.username || "?").charAt(0).toUpperCase();
-    const avHtml = url
-      ? '<img src="' + escapeHtml(url) + '" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\';"><span style="display:none;">' + escapeHtml(fallback) + '</span>'
-      : escapeHtml(fallback);
+    const url = avatarsMap[c.username], fallback = (c.username || "?").charAt(0).toUpperCase();
+    const avHtml = url ? '<img src="' + escapeHtml(url) + '" alt="" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\';"><span style="display:none;">' + escapeHtml(fallback) + '</span>' : escapeHtml(fallback);
     const date = c.created_at ? new Date(c.created_at).toLocaleString("ru", { dateStyle: "short", timeStyle: "short" }) : "";
-    return '<div class="comment-item" data-user="' + escapeHtml(c.username) + '">' +
-      '<div class="comment-avatar">' + avHtml + '</div>' +
-      '<div class="comment-content">' +
-        '<div class="comment-author">' + escapeHtml(c.username) + '</div>' +
-        '<div class="comment-text">' + escapeHtml(c.text) + '</div>' +
-        '<div class="comment-date">' + date + '</div>' +
-      '</div></div>';
+    return '<div class="comment-item" data-user="' + escapeHtml(c.username) + '"><div class="comment-avatar">' + avHtml + '</div><div class="comment-content"><div class="comment-author">' + escapeHtml(c.username) + '</div><div class="comment-text">' + escapeHtml(c.text) + '</div><div class="comment-date">' + date + '</div></div></div>';
   }).join("");
-  wrap.querySelectorAll(".comment-item").forEach(item => {
-    item.addEventListener("click", () => openProfile(item.dataset.user));
-  });
+  wrap.querySelectorAll(".comment-item").forEach(item => item.addEventListener("click", () => openProfile(item.dataset.user)));
 }
 
-// ============================================================
-//  СЕТКА
-// ============================================================
 function renderGrid() {
-  const me = getCurrentUser();
-  const admin = isAdmin();
-
-  const custom = serverVideos.map(v => ({
-    id: "srv_" + v.id, rawId: v.id, isCustom: true,
-    isMine: me && v.owner === me, owner: v.owner,
-    title: v.title, channel: v.channel || "—",
-    tag: "Своя ссылка", dur: "—", url: v.url,
-    views: v.views || 0
-  }));
+  const me = getCurrentUser(), admin = isAdmin();
+  const custom = serverVideos.map(v => ({ id: "srv_" + v.id, rawId: v.id, isCustom: true, isMine: me && v.owner === me, owner: v.owner, title: v.title, channel: v.channel || "—", tag: "Своя ссылка", dur: "—", url: v.url, views: v.views || 0 }));
   const builtin = BUILTIN.map(v => ({ ...v, isCustom: false, isMine: false, owner: null, views: 0 }));
-
   let all = custom.concat(builtin);
   if (feedFilter === "subs") {
     if (!me) all = [];
-    else {
-      const followed = new Set(subsMap[me] || []);
-      all = all.filter(v => v.owner && followed.has(v.owner));
-    }
+    else { const followed = new Set(subsMap[me] || []); all = all.filter(v => v.owner && followed.has(v.owner)); }
   }
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    all = all.filter(v => (v.title + " " + v.channel + " " + v.tag).toLowerCase().includes(q));
-  }
-
+  if (searchQuery) { const q = searchQuery.toLowerCase(); all = all.filter(v => (v.title + " " + v.channel + " " + v.tag).toLowerCase().includes(q)); }
   grid.innerHTML = "";
   if (!all.length) {
-    grid.innerHTML = '<div class="empty">' +
-      (feedFilter === "subs" ? "Подписок пока нет — зайдите в профиль автора и подпишитесь" : "Ничего не найдено") + '</div>';
+    grid.innerHTML = '<div class="empty">' + (feedFilter === "subs" ? "Подписок пока нет — зайдите в профиль автора и подпишитесь" : "Ничего не найдено") + '</div>';
     return;
   }
-
   all.forEach(v => {
     const canEdit = v.isCustom && (v.isMine || admin);
     const badgeText = v.isCustom ? (v.isMine ? 'МОЁ' : 'ССЫЛКА') : 'OPEN';
     const likes = v.rawId ? (likesMap[v.rawId] || []).length : 0;
     const cmts = v.rawId ? (commentsMap[v.rawId] || []).length : 0;
-    const authorHtml = v.owner
-      ? '<span class="card-author-click" style="cursor:pointer;color:#ffb9a8;display:flex;align-items:center;gap:5px;">' +
-          avatarHtml(v.owner, "small") + escapeHtml(v.owner) + '</span>'
-      : escapeHtml(v.channel);
-
+    const authorHtml = v.owner ? '<span class="card-author-click" style="cursor:pointer;color:#ffb9a8;display:flex;align-items:center;gap:5px;">' + avatarHtml(v.owner, "small") + escapeHtml(v.owner) + '</span>' : escapeHtml(v.channel);
     const card = document.createElement("div");
     card.className = "card" + (currentVideo && currentVideo.id === v.id ? " active" : "");
-    card.innerHTML =
-      '<div class="thumb">🎬<div class="badge ' + (v.isCustom ? 'mine' : '') + '">' + badgeText + '</div><div class="dur">' + (v.dur || '—') + '</div></div>' +
-      '<div class="card-body">' +
-        '<div class="card-title">' + escapeHtml(v.title) + '</div>' +
-        '<div class="card-sub">' + authorHtml + '</div>' +
-        (v.rawId ? '<div class="card-stats">👁 ' + (v.views || 0) + ' • ❤️ ' + likes + ' • 💬 ' + cmts + '</div>' : '') +
-        (canEdit ? '<div class="card-actions"><button class="mini" data-act="edit">✏ Изм.</button><button class="mini danger" data-act="delete">🗑 Удал.</button></div>' : '') +
-      '</div>';
-
+    card.innerHTML = '<div class="thumb">🎬<div class="badge ' + (v.isCustom ? 'mine' : '') + '">' + badgeText + '</div><div class="dur">' + (v.dur || '—') + '</div></div><div class="card-body"><div class="card-title">' + escapeHtml(v.title) + '</div><div class="card-sub">' + authorHtml + '</div>' + (v.rawId ? '<div class="card-stats">👁 ' + (v.views || 0) + ' • ❤️ ' + likes + ' • 💬 ' + cmts + '</div>' : '') + (canEdit ? '<div class="card-actions"><button class="mini" data-act="edit">✏ Изм.</button><button class="mini danger" data-act="delete">🗑 Удал.</button></div>' : '') + '</div>';
     card.addEventListener("click", e => {
       if (e.target.closest("button")) return;
-      if (e.target.closest(".card-author-click")) {
-        e.stopPropagation();
-        openProfile(v.owner);
-        return;
-      }
+      if (e.target.closest(".card-author-click")) { e.stopPropagation(); openProfile(v.owner); return; }
       playVideo(v);
     });
-
     if (canEdit) {
       card.querySelector('[data-act="edit"]').addEventListener("click", e => { e.stopPropagation(); editMyVideoCard(v); });
       card.querySelector('[data-act="delete"]').addEventListener("click", e => { e.stopPropagation(); confirmDeleteMyVideo(v); });
     }
-
     grid.appendChild(card);
   });
 }
 
-// ============================================================
-//  ПЛЕЕР
-// ============================================================
 function playVideo(v) {
   currentVideo = v;
   errBox.classList.remove("show");
-  player.src = v.url;
-  player.load();
-  player.play().catch(() => {});
-  updateMeta();
-  renderGrid();
-  renderVideoActions();
-  renderComments();
+  player.src = v.url; player.load(); player.play().catch(() => {});
+  updateMeta(); renderGrid(); renderVideoActions(); renderComments();
   if (v.rawId) incrementViews(v.rawId);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 player.addEventListener("error", () => { if (player.src) errBox.classList.add("show"); });
 player.addEventListener("playing", () => errBox.classList.remove("show"));
-
 $("likeBtn").addEventListener("click", toggleLike);
 $("commentForm").addEventListener("submit", e => { e.preventDefault(); submitComment($("commentInput").value); });
 $("commentLoginLink").addEventListener("click", () => openAuthModal("login"));
 
-// ============================================================
-//  РЕДАКТИРОВАНИЕ / УДАЛЕНИЕ
-// ============================================================
 async function editMyVideoCard(v) {
   const t = prompt("Название:", v.title); if (t === null) return;
   const c = prompt("Канал:", v.channel); if (c === null) return;
   const u = prompt("Ссылка:", v.url); if (u === null) return;
   if (!u || !/^https?:\/\//i.test(u)) { toast("Ссылка должна начинаться с http"); return; }
   try {
-    const { error } = await sb.from("videos").update({
-      title: t.trim() || "Без названия",
-      channel: c.trim() || "Неизвестный канал",
-      url: u.trim()
-    }).eq("id", v.rawId);
+    const { error } = await sb.from("videos").update({ title: t.trim() || "Без названия", channel: c.trim() || "Неизвестный канал", url: u.trim() }).eq("id", v.rawId);
     if (error) throw error;
     toast("Обновлено");
   } catch (e) { toast("Ошибка: " + e.message); }
 }
 async function confirmDeleteMyVideo(v) {
   if (!confirm('Удалить "' + v.title + '"?')) return;
-  try {
-    const { error } = await sb.from("videos").delete().eq("id", v.rawId);
-    if (error) throw error;
-    toast("Удалено");
-  } catch (e) { toast("Ошибка: " + e.message); }
+  try { const { error } = await sb.from("videos").delete().eq("id", v.rawId); if (error) throw error; toast("Удалено"); }
+  catch (e) { toast("Ошибка: " + e.message); }
 }
 
-// ============================================================
-//  АДМИН
-// ============================================================
 $("adminToggle").addEventListener("click", () => {
   if (isAdmin()) { openAdminPanel(); return; }
   const pwd = prompt("Пароль администратора:");
   if (pwd === null) return;
   if (pwd !== ADMIN_PASSWORD) { toast("Неверный пароль"); return; }
-  localStorage.setItem(ADMIN_KEY, "1");
-  updateAuthUI(); renderGrid(); openAdminPanel();
+  localStorage.setItem(ADMIN_KEY, "1"); updateAuthUI(); renderGrid(); openAdminPanel();
 });
 function openAdminPanel() { renderAdminPanel(); $("adminBack").classList.add("show"); }
 function closeAdminPanel() { $("adminBack").classList.remove("show"); }
 $("adminClose").addEventListener("click", closeAdminPanel);
 $("adminBack").addEventListener("click", e => { if (e.target === $("adminBack")) closeAdminPanel(); });
-$("adminLogout").addEventListener("click", () => {
-  localStorage.removeItem(ADMIN_KEY); updateAuthUI(); renderGrid(); closeAdminPanel(); toast("Вы вышли из админки");
-});
+$("adminLogout").addEventListener("click", () => { localStorage.removeItem(ADMIN_KEY); updateAuthUI(); renderGrid(); closeAdminPanel(); toast("Вы вышли из админки"); });
 function renderAdminPanel() {
   const body = $("adminBody");
   if (!serverVideos.length) { body.innerHTML = '<div class="empty">Пока нет видео</div>'; return; }
@@ -1325,163 +1007,50 @@ async function editVideoFull(id) {
   const c = prompt("Канал:", v.channel || ""); if (c === null) return;
   const u = prompt("Ссылка:", v.url); if (u === null) return;
   if (!u || !/^https?:\/\//i.test(u)) { toast("Ссылка должна начинаться с http"); return; }
-  try {
-    const { error } = await sb.from("videos").update({ title: t.trim() || "Без названия", channel: c.trim() || "—", url: u.trim() }).eq("id", id);
-    if (error) throw error;
-    toast("Обновлено");
-  } catch (e) { toast("Ошибка: " + e.message); }
+  try { const { error } = await sb.from("videos").update({ title: t.trim() || "Без названия", channel: c.trim() || "—", url: u.trim() }).eq("id", id); if (error) throw error; toast("Обновлено"); }
+  catch (e) { toast("Ошибка: " + e.message); }
 }
 async function deleteVideoConfirm(id) {
   const v = serverVideos.find(x => x.id === id); if (!v) return;
   if (!confirm('Удалить "' + v.title + '"?')) return;
-  try {
-    const { error } = await sb.from("videos").delete().eq("id", id);
-    if (error) throw error;
-    toast("Удалено");
-  } catch (e) { toast("Ошибка: " + e.message); }
+  try { const { error } = await sb.from("videos").delete().eq("id", id); if (error) throw error; toast("Удалено"); }
+  catch (e) { toast("Ошибка: " + e.message); }
 }
 
-// ============================================================
-//  ДОБАВЛЕНИЕ — модалка + catbox
-// ============================================================
 const modalBack = $("modalBack");
-function openAddModal() {
-  resetAddModal();
-  modalBack.classList.add("show");
-  setTimeout(() => $("inUrl").focus(), 150);
-}
-function resetAddModal() {
-  $("inTitle").value = "";
-  $("inChannel").value = "";
-  $("inUrl").value = "";
-  $("inFile").value = "";
-  $("fileName").textContent = "";
-  $("progressWrap").classList.remove("show");
-  $("progressFill").style.width = "0%";
-  $("progressLabel").textContent = "0%";
-  isUploading = false;
-}
+function openAddModal() { modalBack.classList.add("show"); setTimeout(() => $("inUrl").focus(), 150); }
+function resetAddModal() { $("inTitle").value = ""; $("inChannel").value = ""; $("inUrl").value = ""; }
 
 $("fabAdd").addEventListener("click", () => {
-  if (!getCurrentUser()) {
-    toast("Войдите, чтобы добавлять видео");
-    openAuthModal("login", () => openAddModal());
-    return;
-  }
-  openAddModal();
+  if (!getCurrentUser()) { toast("Войдите, чтобы добавлять видео"); openAuthModal("login", () => openAddModal()); return; }
+  resetAddModal(); openAddModal();
 });
-
-$("cancelBtn").addEventListener("click", () => {
-  if (isUploading) {
-    if (!confirm("Загрузка ещё идёт. Отменить?")) return;
-  }
-  modalBack.classList.remove("show");
-  resetAddModal();
-});
-modalBack.addEventListener("click", e => {
-  if (e.target === modalBack && !isUploading) $("cancelBtn").click();
-});
-
-// Обработчик выбора файла — показываем имя и размер
-$("inFile").addEventListener("change", e => {
-  const f = e.target.files[0];
-  if (!f) {
-    $("fileName").textContent = "";
-    return;
-  }
-  const sizeMb = (f.size / 1024 / 1024).toFixed(1);
-  const big = f.size > MAX_FILE_SIZE;
-  $("fileName").innerHTML = 'Выбран: <b>' + escapeHtml(f.name) + '</b> (' + sizeMb + ' МБ)' +
-    (big ? ' <span style="color:#ff6a5e">— слишком большой, макс. 200 МБ</span>' : '');
-});
+$("cancelBtn").addEventListener("click", () => { modalBack.classList.remove("show"); });
+modalBack.addEventListener("click", e => { if (e.target === modalBack) $("cancelBtn").click(); });
 
 $("addBtn").addEventListener("click", async () => {
-  if (isUploading) return;
   if (!getCurrentUser()) { $("cancelBtn").click(); openAuthModal("login", () => openAddModal()); return; }
-
-  const title = $("inTitle").value.trim();
-  const channel = $("inChannel").value.trim();
-  let url = $("inUrl").value.trim();
-  const file = $("inFile").files[0];
-
-  if (!url && !file) { toast("Вставьте ссылку или выберите файл"); return; }
-
-  isUploading = true;
-  $("addBtn").disabled = true;
-  $("addBtn").textContent = "Загрузка…";
-
-  try {
-    // Если выбран файл — грузим на catbox и получаем URL
-    if (file) {
-      if (file.size > MAX_FILE_SIZE) {
-        throw new Error("Файл больше 200 МБ — используйте GitHub Releases или 0x0.st");
-      }
-      $("progressWrap").classList.add("show");
-      $("progressLabel").textContent = "Загрузка на catbox… 0%";
-
-      const result = await uploadVideoFile(file, pct => {
-        $("progressFill").style.width = pct + "%";
-        $("progressLabel").textContent = "Загрузка на catbox… " + pct + "%";
-      });
-
-      url = result.url;
-      $("progressLabel").textContent = "Загружено! Сохраняю в базу…";
-
-      if (result.provider === "litterbox") {
-        toast("Catbox не сработал, файл на Litterbox (временно, 72 ч)");
-      }
-    }
-
-    // Сохраняем видео в базу
-    await addVideo(
-      title || (file ? file.name.replace(/\.[^.]+$/, "") : "Без названия"),
-      channel || (getCurrentUser() + " channel"),
-      url
-    );
-
-    toast("Видео добавлено!");
-    modalBack.classList.remove("show");
-    resetAddModal();
-  } catch (e) {
-    console.error(e);
-    toast("Ошибка: " + e.message);
-    $("progressLabel").textContent = "Ошибка: " + e.message;
-  } finally {
-    isUploading = false;
-    $("addBtn").disabled = false;
-    $("addBtn").textContent = "Добавить";
-  }
+  const t = $("inTitle").value.trim();
+  const c = $("inChannel").value.trim();
+  const u = $("inUrl").value.trim();
+  if (!u) { toast("Вставьте ссылку"); $("inUrl").focus(); return; }
+  if (!/^https?:\/\//i.test(u)) { toast("Ссылка должна начинаться с http:// или https://"); return; }
+  $("addBtn").disabled = true; $("addBtn").textContent = "Добавление…";
+  try { await addVideo(t, c, u); toast("Видео добавлено!"); $("cancelBtn").click(); }
+  catch (e) { toast("Ошибка: " + e.message); }
+  finally { $("addBtn").disabled = false; $("addBtn").textContent = "Добавить"; }
 });
 
-// ============================================================
-//  ПОИСК / ВКЛАДКИ
-// ============================================================
 $("searchForm").addEventListener("submit", e => { e.preventDefault(); searchQuery = $("searchInput").value.trim(); renderGrid(); });
 $("searchInput").addEventListener("input", e => { searchQuery = e.target.value.trim(); renderGrid(); });
-
 document.querySelectorAll(".feed-tab").forEach(t => {
-  t.addEventListener("click", () => {
-    document.querySelectorAll(".feed-tab").forEach(x => x.classList.toggle("active", x === t));
-    feedFilter = t.dataset.feed;
-    renderGrid();
-  });
+  t.addEventListener("click", () => { document.querySelectorAll(".feed-tab").forEach(x => x.classList.toggle("active", x === t)); feedFilter = t.dataset.feed; renderGrid(); });
 });
 
-// ============================================================
-//  УТИЛИТЫ
-// ============================================================
-function escapeHtml(s) {
-  return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-}
+function escapeHtml(s) { return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]); }
 let toastTimer = null;
-function toast(msg) {
-  const el = $("toast"); el.textContent = msg; el.classList.add("show");
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
-}
+function toast(msg) { const el = $("toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 2800); }
 
-// ============================================================
-//  СТАРТ
-// ============================================================
 async function init() {
   updateAuthUI();
   await validateSession();
@@ -1489,15 +1058,8 @@ async function init() {
   subscribeRealtime();
   if (serverVideos.length) {
     const f = serverVideos[0];
-    playVideo({
-      id: "srv_" + f.id, rawId: f.id, isCustom: true,
-      isMine: getCurrentUser() === f.owner,
-      title: f.title, channel: f.channel, tag: "Своя ссылка",
-      url: f.url, views: f.views || 0
-    });
-  } else if (BUILTIN.length) {
-    playVideo(BUILTIN[0]);
-  }
+    playVideo({ id: "srv_" + f.id, rawId: f.id, isCustom: true, isMine: getCurrentUser() === f.owner, title: f.title, channel: f.channel, tag: "Своя ссылка", url: f.url, views: f.views || 0 });
+  } else if (BUILTIN.length) { playVideo(BUILTIN[0]); }
 }
 init();
 </script>
